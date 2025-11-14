@@ -1,0 +1,479 @@
+/* Start CK Editor */
+.ck.ck-button.ck-button_with-text .ck-button__label,
+a.ck.ck-button.ck-button_with-text .ck-button__label {
+    text-align: start !important;
+    /* Align text to the left */
+    margin-left: 8px;
+    margin-right: 8px;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+.ck.ck-menu-bar__menu.ck-menu-bar__menu_top-level > .ck-menu-bar__menu__button .ck-button__label {
+    margin: 0 !important;
+}
+
+.ck.ck-menu-bar {
+    padding: 1.5px !important;
+}
+
+.ck.ck-button {
+    padding-top: 1.5px !important;
+    padding-bottom: 1.5px !important;
+    padding-left: 4px !important;
+    padding-right: 4px !important;
+}
+.ck.ck-menu-bar__menu .ck-button.ck-menu-bar__menu__item__button {
+    padding: 4px !important;
+}
+
+.ck.ck-button__label {
+    line-height: 1.5 !important;
+}
+
+.ck.ck-list-item-button .ck-list-item-button__check-holder {
+    display: none !important;
+}
+
+.ck .ck-list__item {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.ck.ck-button.ck-list-item-button {
+    margin: 0 !important;
+    padding: 10px !important;
+    /* padding-top: 10px !important;
+    padding-bottom: 10px !important; */
+}
+
+.ck.ck-list__item.ck-menu-bar__menu__item {
+    padding: 0 !important;
+}
+
+.ck.ck-splitbutton.ck-splitbutton_open > .ck-splitbutton__arrow:not(.ck-disabled)::after,
+.ck.ck-splitbutton:hover > .ck-splitbutton__arrow:not(.ck-disabled)::after {
+    left: -1px;
+}
+
+/* CKEditor Content */
+@media print {
+    body {
+        margin: 0 !important;
+    }
+}
+
+.prose img {
+    width: 100%;
+    height: auto;
+}
+
+.prose figure {
+    margin: auto;
+}
+
+.prose figure td {
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+}
+
+.ck-powered-by {
+    display: none !important;
+}
+
+.main-container {
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.editor-container_classic-editor .editor-container__editor {
+    min-width: 795px;
+    max-width: 795px;
+}
+
+.editor-container_include-block-toolbar {
+    margin-left: 42px;
+}
+.ck-content {
+    line-height: 1.6;
+    word-break: break-word;
+}
+.ck-content th {
+    white-space: nowrap;
+}
+
+.ck-content img.image_resized {
+    display: inline;
+}
+.ck-content h3.category {
+    font-size: 20px;
+    font-weight: bold;
+    color: #555;
+    letter-spacing: 10px;
+    margin: 0;
+    padding: 0;
+}
+
+.ck-content h2.document-title {
+    font-size: 50px;
+    font-weight: bold;
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+
+.ck-content h3.document-subtitle {
+    font-size: 20px;
+    color: #555;
+    margin: 0 0 1em;
+    font-weight: bold;
+    padding: 0;
+}
+
+.ck-content p.info-box {
+    --background-size: 30px;
+    --background-color: #e91e63;
+    padding: 1.2em 2em;
+    border: 1px solid var(--background-color);
+    background:
+        linear-gradient(135deg, var(--background-color) 0%, var(--background-color) var(--background-size), transparent var(--background-size)),
+        linear-gradient(
+            135deg,
+            transparent calc(100% - var(--background-size)),
+            var(--background-color) calc(100% - var(--background-size)),
+            var(--background-color)
+        );
+    border-radius: 10px;
+    margin: 1.5em 2em;
+    box-shadow: 5px 5px 0 #ffe6ef;
+}
+
+.ck-content blockquote.side-quote {
+    font-style: normal;
+    float: right;
+    width: 35%;
+    position: relative;
+    border: 0;
+    overflow: visible;
+    z-index: 1;
+    margin-left: 1em;
+}
+
+.ck-content blockquote.side-quote::before {
+    content: '“';
+    position: absolute;
+    top: -37px;
+    left: -10px;
+    display: block;
+    font-size: 200px;
+    color: #e7e7e7;
+    z-index: -1;
+    line-height: 1;
+}
+
+.ck-content blockquote.side-quote p {
+    font-size: 2em;
+    line-height: 1;
+}
+
+.ck-content blockquote.side-quote p:last-child:not(:first-child) {
+    font-size: 1.3em;
+    text-align: right;
+    color: #555;
+}
+
+.ck-content span.marker {
+    background: yellow;
+}
+
+.ck-content span.spoiler {
+    background: #000;
+    color: #000;
+}
+
+.ck-content span.spoiler:hover {
+    background: #000;
+    color: #fff;
+}
+
+.ck-content pre.fancy-code {
+    border: 0;
+    margin-left: 2em;
+    margin-right: 2em;
+    border-radius: 10px;
+}
+
+.ck-content pre.fancy-code::before {
+    content: '';
+    display: block;
+    height: 13px;
+    background: url(data:image/svg+xml;base64,PHN2ZyBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1NCAxMyI+CiAgPGNpcmNsZSBjeD0iNi41IiBjeT0iNi41IiByPSI2LjUiIGZpbGw9IiNGMzZCNUMiLz4KICA8Y2lyY2xlIGN4PSIyNi41IiBjeT0iNi41IiByPSI2LjUiIGZpbGw9IiNGOUJFNEQiLz4KICA8Y2lyY2xlIGN4PSI0Ny41IiBjeT0iNi41IiByPSI2LjUiIGZpbGw9IiM1NkM0NTMiLz4KPC9zdmc+Cg==);
+    margin-bottom: 8px;
+    background-repeat: no-repeat;
+}
+
+.ck-content pre.fancy-code-dark {
+    background: #272822;
+    color: #fff;
+    box-shadow: 5px 5px 0 #0000001f;
+}
+
+.ck-content pre.fancy-code-bright {
+    background: #dddfe0;
+    color: #000;
+    box-shadow: 5px 5px 0 #b3b3b3;
+}
+
+.ck.ck-toolbar {
+    border: none !important;
+}
+
+/* End CK Editor */
+
+/* ================================
+   CKEditor 5 Dark Mode
+   ================================ */
+/* General dark mode text */
+.dark .ck-content p,
+.dark .ck-content pre,
+.dark .ck-content h1,
+.dark .ck-content h2,
+.dark .ck-content h3,
+.dark .ck-content h4,
+.dark .ck-content h5,
+.dark .ck-content a,
+.dark .ck-content li,
+.dark .ck-content td,
+.dark .ck-content th,
+.dark .ck-content strong,
+.dark .ck-content i,
+.dark .ck-content ol,
+.dark .ck-content ul {
+    color: white !important;
+}
+
+.dark button.ck.ck-button.ck-resize-image-button.ck-off.ck-button_with-text.ck-dropdown__button {
+    color: white;
+}
+
+.dark .ck.ck-list-styles-list,
+.dark .ck.ck-color-selector {
+    background-color: #444 !important;
+    color: white !important;
+}
+
+/* But inside a <mark>, override to black text */
+.dark .ck-content mark,
+.dark .ck-content mark * {
+    color: black !important;
+}
+
+/* Apply dark theme editor background, text color, and border */
+.dark .ck.ck-editor__main > .ck-editor__editable {
+    background-color: #1e1e1e !important; /* Dark background */
+    color: #ffffff !important; /* White text */
+    border-color: #333 !important; /* Dark border color */
+    padding: 10px !important; /* Adjust padding */
+}
+.dark .ck.ck-editor__main > .ck-source-editing-area {
+    background-color: #1e1e1e !important; /* Dark background */
+    color: #ffffff !important; /* White text */
+    border-color: #333 !important; /* Dark border color */
+    padding: 10px !important; /* Adjust padding */
+}
+.dark .ck.ck-menu-bar {
+    background-color: #2a2a2a !important;
+    color: #fff !important;
+}
+/* Dark Mode Menu Bar */
+.dark .ck.ck-menu-bar__menu.ck-menu-bar__menu_top-level > .ck-menu-bar__menu__button {
+    background-color: #2a2a2a !important;
+    color: #fff !important;
+}
+
+/* Dark Mode Hover for Menu Button */
+.dark .ck.ck-menu-bar__menu.ck-menu-bar__menu_top-level > .ck-menu-bar__menu__button:hover {
+    background-color: #444 !important;
+    color: #fff !important;
+}
+
+/* Dark Mode List Item Button */
+.dark .ck.ck-button.ck-list-item-button {
+    background-color: #2a2a2a !important;
+    color: #fff !important;
+}
+
+/* Dark Mode Hover for List Item Button */
+.dark .ck.ck-button.ck-list-item-button:hover {
+    background-color: #444 !important;
+    color: #fff !important;
+}
+
+/* Dark Mode List */
+.dark .ck.ck-list {
+    background-color: #2a2a2a !important;
+    color: #fff !important;
+}
+
+/* Dark Mode Hover for List */
+.dark .ck.ck-list:hover {
+    background-color: #444 !important;
+    color: #fff !important;
+}
+
+.dark .ck.ck-toolbar {
+    background-color: #444 !important;
+    color: #fff !important;
+}
+/* Dark mode toolbar buttons default */
+.dark .ck.ck-toolbar > .ck-toolbar__items > *:not(.ck-toolbar__line-break),
+.dark .ck.ck-toolbar > .ck.ck-toolbar__grouped-dropdown {
+    background-color: #444 !important;
+    color: #fff !important;
+}
+
+/* Dark mode toolbar buttons on hover */
+.dark .ck.ck-toolbar > .ck-toolbar__items > *:not(.ck-toolbar__line-break):hover,
+.dark .ck.ck-toolbar > .ck.ck-toolbar__grouped-dropdown:hover {
+    background-color: #555 !important;
+    color: #fff !important;
+}
+.dark .ck.ck-button:not(.ck-disabled):hover,
+a.ck.ck-button:not(.ck-disabled):hover {
+    background-color: #555 !important;
+    color: #fff !important;
+}
+.dark .ck.ck-style-panel {
+    background-color: #555 !important;
+    color: #fff !important;
+}
+
+/* Dark mode default style for disabled style panel button */
+.dark .ck.ck-style-panel .ck-style-grid .ck-style-grid__button.ck-disabled:not(:focus) {
+    background-color: #2a2a2a !important;
+    color: #777 !important;
+    cursor: not-allowed !important;
+}
+
+.dark .dark .ck.ck-style-panel .ck-style-grid .ck-style-grid__button:not(.ck-disabled) {
+    background-color: #2a2a2a !important;
+    color: #777 !important;
+}
+
+/* Default dark appearance */
+.dark .ck.ck-style-panel {
+    background-color: #1e1e1e !important;
+    color: #fff !important;
+    border-color: #333 !important;
+}
+
+/* Grid button default (enabled) */
+.dark .ck.ck-style-panel .ck-style-grid .ck-style-grid__button:not(.ck-disabled) {
+    background-color: #2a2a2a !important;
+    color: #fff !important;
+    border: 1px solid #444 !important;
+}
+
+/* Hover (enabled) */
+.dark .ck.ck-style-panel .ck-style-grid .ck-style-grid__button:not(.ck-disabled):hover {
+    background-color: #3a3a3a !important;
+    border-color: #555 !important;
+}
+.dark .ck.ck-style-panel .ck-style-grid .ck-style-grid__button:not(.ck-on) .ck-button__label {
+    color: black !important;
+}
+
+.dark .ck-content span.marker {
+    color: black !important;
+}
+
+.dark .ck.ck-style-panel .ck-style-grid .ck-style-grid__button.ck-disabled .ck-style-grid__button__preview {
+    color: black !important;
+}
+
+/* Focus (enabled) */
+.dark .ck.ck-style-panel .ck-style-grid .ck-style-grid__button:not(.ck-disabled):focus {
+    outline: 2px solid #555 !important;
+    outline-offset: 2px !important;
+}
+
+/* Active state (clicked) */
+.dark .ck.ck-style-panel .ck-style-grid .ck-style-grid__button.ck-on {
+    background-color: #555 !important;
+    border-color: #777 !important;
+}
+
+/* Disabled buttons */
+.dark .ck.ck-style-panel .ck-style-grid .ck-style-grid__button.ck-disabled {
+    background-color: #2a2a2a !important;
+    color: #888 !important;
+    border-color: #444 !important;
+    cursor: not-allowed !important;
+    opacity: 0.6 !important;
+}
+
+/* Wrapper */
+.dark .ck.ck-splitbutton.ck-dropdown__button {
+    background-color: #444 !important;
+    border: 1px solid #444 !important;
+    color: #fff !important;
+}
+
+/* Left (action) button */
+.dark .ck.ck-splitbutton__action {
+    background-color: transparent !important;
+    color: #fff !important;
+    border-right: 1px solid #444 !important;
+}
+
+/* Right (dropdown toggle) button */
+.dark .ck.ck-splitbutton__arrow {
+    background-color: transparent !important;
+    color: #fff !important;
+}
+
+/* Hover: Action button */
+.dark .ck.ck-splitbutton__action:hover {
+    background-color: #3a3a3a !important;
+}
+
+/* Hover: Dropdown arrow */
+.dark .ck.ck-splitbutton__arrow:hover {
+    background-color: #3a3a3a !important;
+}
+
+/* Focus (left or right) */
+.dark .ck.ck-splitbutton__action:focus,
+.dark .ck.ck-splitbutton__arrow:focus {
+    outline: 2px solid #666 !important;
+    outline-offset: 1px !important;
+}
+
+/* Active (when button is "on") */
+.dark .ck.ck-splitbutton.ck-on .ck-splitbutton__action,
+.dark .ck.ck-splitbutton.ck-on .ck-splitbutton__arrow {
+    background-color: #444 !important;
+}
+
+/* Disabled */
+.dark .ck.ck-splitbutton.ck-disabled .ck-splitbutton__action,
+.dark .ck.ck-splitbutton.ck-disabled .ck-splitbutton__arrow {
+    background-color: #2a2a2a !important;
+    color: #888 !important;
+    cursor: not-allowed !important;
+    opacity: 0.6 !important;
+}
+
+.dark .ck.ck-dropdown__panel {
+    background-color: #2a2a2a !important;
+}
+
+.dark .ck-style-grid h3.category,
+.dark .ck-style-grid h2.document-title,
+.dark .ck-style-grid h3.document-subtitle {
+    color: black !important;
+}
+/* ================================
+   End CKEditor 5 Dark Mode
+   ================================ */

@@ -1,0 +1,18 @@
+.moving-rect {
+    animation: moving 1s linear infinite;
+}
+
+@keyframes moving {
+    0% {
+        width: 0%;
+        transform: translateX(0);
+    }
+    50% {
+        width: 100%;
+        transform: translateX(0);
+    }
+    100% {
+        width: 0%;
+        transform: translateX(100%);
+    }
+}

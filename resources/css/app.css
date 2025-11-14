@@ -1,0 +1,467 @@
+@import 'tailwindcss';
+
+@plugin 'tailwindcss-animate';
+@plugin "@tailwindcss/typography";
+
+@source "../views";
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+    --animate-scroll: scroll var(--animation-duration, 40s) var(--animation-direction, forwards) linear infinite;
+
+    @keyframes scroll {
+        to {
+            transform: translate(calc(-50% - 0.5rem));
+        }
+    }
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+    animation: none;
+    mix-blend-mode: normal;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+.html-object-embed {
+    width: 100%;
+}
+
+/* Vanilla CSS for flip card */
+.card {
+    perspective: 800px;
+}
+.card__content {
+    transform-style: preserve-3d;
+}
+
+.card__front,
+.card__back {
+    backface-visibility: hidden;
+}
+.card__back {
+    transform: rotateY(0.5turn);
+}
+
+.toaster .toast::after {
+    z-index: 100;
+    content: '';
+    position: absolute;
+    bottom: -6px;
+    left: 1px;
+    right: 1px;
+    width: 100%;
+    height: 6px;
+    background-color: var(--primary);
+    border-radius: 100px 100px 100px 100px;
+    transform: translate(0px, 1px);
+    animation: toast-progress linear;
+    animation-duration: 4.4s;
+}
+
+@keyframes rainbow {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+@keyframes toast-progress {
+    from {
+        width: 100%;
+    }
+    to {
+        width: 0%;
+    }
+}
+
+/* Start Long Soeng Font */
+@font-face {
+    font-family: KantumruyPro;
+    src: url('/assets/fonts/KantumruyPro/KantumruyPro.ttf') format('truetype');
+}
+@font-face {
+    font-family: PoppinsRegular;
+    src: url('/assets/fonts/Poppins/Poppins-Regular.ttf') format('truetype');
+}
+@font-face {
+    font-family: Siemreap;
+    src: url('/assets/fonts/Siemreap/Siemreap-Regular.ttf') format('truetype');
+}
+@font-face {
+    font-family: Koulen;
+    src: url('/assets/fonts/Koulen/Koulen-Regular.ttf') format('truetype');
+}
+/* End Long Soeng Font */
+
+/*End Western font */
+
+@theme {
+    /* Start Long Soeng */
+    --font-KantumruyPro:
+        'KantumruyPro', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+
+    --font-poppins-regular:
+        'PoppinsRegular', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-koulen-regular:
+        'Koulen', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-siemreap-regular:
+        'Siemreap', 'PoppinsRegular', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
+        'Noto Color Emoji';
+    /* End Long Soeng */
+
+    --font-sans:
+        'KantumruyPro', 'PoppinsRegular', 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+        'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-moul-regular: MoulRegular;
+    --font-now-black: NowBlack, 'Poppins';
+    --font-now-bold: NowBold, 'Poppins';
+    --font-now-light: NowLight, 'Poppins';
+    --font-now-medium: NowMedium, 'Poppins';
+    --font-now-regular: NowRegular, 'Poppins';
+    --font-now-thin: NowThin, 'Poppins';
+    --font-now-alt-black: NowAltBlack, 'Poppins';
+    --font-now-alt-bold: NowAltBold, 'Poppins';
+    --font-now-alt-light: NowAltLight, 'Poppins';
+    --font-now-alt-medium: NowAltMedium, 'Poppins';
+    --font-now-alt-regular: NowAltRegular, 'Poppins';
+    --font-now-alt-thin: NowAltThin, 'Poppins';
+    --font-now-black: ProximaBlack, 'Poppins';
+    --font-now-black-italic: ProximaBlackItalic, 'Poppins';
+    --font-proxima-thin: ProximaThin, 'Poppins';
+    --font-proxima-nova-regular: NovaRegular, 'Poppins';
+    --font-proxima-nova-bold: ProximaBold, 'Poppins';
+    --font-proxima-nova: ProximaBoldItalic, 'Poppins';
+    --font-proxima-nova-extrabold: ProximaExtrabold, 'Poppins';
+    --font-proxima-nova-extrabold-italic: ProximaExtraboldItalic, 'Poppins';
+    --font-proxima-nova-semibold-italic: ProximaSemiboldItalic, 'Poppins';
+    --font-proxima-nova-semibold: ProximaSemibold, 'Poppins';
+    --font-noto-san-black: NotoSansBlack, 'Poppins';
+    --font-noto-san-bold: NotoSansBold, 'Poppins';
+    --font-noto-san-extra-bold: NotoSansExtraBold, 'Poppins';
+    --font-noto-san-extra-light: NotoSansExtaLight, 'Poppins';
+    --font-noto-san-light: NotoSansLight, 'Poppins';
+    --font-noto-san-semibold: NotoSansSemibold, 'Poppins';
+    --font-noto-san-thin: NotoSansThin, 'Poppins';
+    --font-noto-san-medium: NotoSansMedium, 'Poppins';
+    --font-noto-san-regular: NotoSansRegular, 'Poppins';
+    --radius-lg: var(--radius);
+    --radius-md: calc(var(--radius) - 2px);
+    --radius-sm: calc(var(--radius) - 4px);
+
+    --color-background: var(--background);
+    --color-foreground: var(--foreground);
+
+    --color-card: var(--card);
+    --color-card-foreground: var(--card-foreground);
+
+    --color-popover: var(--popover);
+    --color-popover-foreground: var(--popover-foreground);
+
+    --color-primary: var(--primary);
+    --color-true-primary: var(--true-primary);
+    --color-true-primary-two: var(--true-primary-two);
+    --color-true-primary-three: var(--true-primary-three);
+    --color-true-primary-four: var(--true-primary-four);
+    --color-primary-foreground: var(--primary-foreground);
+    --color-success: var(--success);
+    --color-success-foreground: var(--success-foreground);
+    --color-warning: var(--warning);
+    --color-warning-foreground: var(--warning-foreground);
+
+    --color-secondary: var(--secondary);
+    --color-secondary-foreground: var(--secondary-foreground);
+
+    --color-muted: var(--muted);
+    --color-muted-foreground: var(--muted-foreground);
+
+    --color-accent: var(--accent);
+    --color-accent-foreground: var(--accent-foreground);
+
+    --color-destructive: var(--destructive);
+    --color-destructive-foreground: var(--destructive-foreground);
+
+    --color-border: var(--border);
+    --color-input: var(--input);
+    --color-ring: var(--ring);
+
+    --color-chart-1: var(--chart-1);
+    --color-chart-2: var(--chart-2);
+    --color-chart-3: var(--chart-3);
+    --color-chart-4: var(--chart-4);
+    --color-chart-5: var(--chart-5);
+
+    --color-sidebar: var(--sidebar);
+    --color-sidebar-foreground: var(--sidebar-foreground);
+    --color-sidebar-primary: var(--sidebar-primary);
+    --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+    --color-sidebar-accent: var(--sidebar-accent);
+    --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+    --color-sidebar-border: var(--sidebar-border);
+    --color-sidebar-ring: var(--sidebar-ring);
+}
+
+/*
+  The default border color has changed to `currentColor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+    *,
+    ::after,
+    ::before,
+    ::backdrop,
+    ::file-selector-button {
+        border-color: var(--color-gray-200, currentColor);
+    }
+}
+
+/* Custom scrollbar for WebKit browsers */
+.scroll-container::-webkit-scrollbar {
+    height: 5px;
+}
+
+.scroll-container::-webkit-scrollbar-thumb {
+    background-color: #555;
+    border-radius: 5px;
+}
+
+.scroll-container::-webkit-scrollbar-track {
+    background-color: #222;
+}
+
+:root {
+    --m: 1.5rem;
+
+    --red: #ff6565;
+    --pink: #ff64f9;
+    --purple: #6b5fff;
+    --blue: #4d8aff;
+    --green: #5bff89;
+    --yellow: #ffee55;
+    --orange: #ff6d1b;
+
+    --background: oklch(1 0 0);
+    --foreground: oklch(0.145 0 0);
+    --card: oklch(1 0 0);
+    --card-foreground: oklch(0.145 0 0);
+    --popover: oklch(1 0 0);
+    --popover-foreground: oklch(0.145 0 0);
+    --primary: oklch(0.54 0.15 249.67);
+    --true-primary: oklch(0.54 0.15 249.67);
+    /* --primary: oklch(0.59 0.23 278.87);
+    --true-primary: oklch(0.59 0.23 278.87); */
+    --true-primary-two: oklch(0.39 0.15 266.19);
+    --true-primary-three: oklch(0.38 0.03 237.56);
+    --true-primary-four: oklch(0.74 0.17 58.85);
+    /* --primary: oklch(0.54 0.09 194.77);
+    --true-primary: oklch(0.54 0.09 194.77); */
+    --primary-foreground: oklch(0.985 0 0);
+    --success: oklch(0.627 0.194 149.214);
+    --success-foreground: oklch(0.985 0 0);
+    --warning: oklch(0.795 0.184 86.047);
+    --warning-foreground: oklch(0.985 0 0);
+    --secondary: oklch(0.97 0 0);
+    --secondary-foreground: oklch(0.205 0 0);
+    --muted: oklch(0.97 0 0);
+    --muted-foreground: oklch(0.556 0 0);
+    --accent: oklch(0.97 0 0);
+    --accent-foreground: oklch(0.205 0 0);
+    --destructive: oklch(0.577 0.245 27.325);
+    --destructive-foreground: oklch(1 0 0);
+    --border: oklch(0.922 0 0);
+    --input: oklch(0.922 0 0);
+    --ring: oklch(0.87 0 0);
+    --chart-1: 12 76% 61%;
+    --chart-2: 173 58% 39%;
+    --chart-3: 197 37% 24%;
+    --chart-4: 43 74% 66%;
+    --chart-5: 27 87% 67%;
+    --radius: 0.625rem;
+    --sidebar: oklch(0.985 0 0);
+    --sidebar-foreground: oklch(0.145 0 0);
+    --sidebar-primary: oklch(0.205 0 0);
+    --sidebar-primary-foreground: oklch(0.985 0 0);
+    --sidebar-accent: oklch(0.94 0 0);
+    --sidebar-accent-foreground: oklch(0.205 0 0);
+    --sidebar-border: oklch(0.922 0 0);
+    --sidebar-ring: oklch(0.87 0 0);
+}
+
+.dark {
+    --background: oklch(0.145 0 0);
+    --foreground: oklch(0.985 0 0);
+    --card: oklch(0.145 0 0);
+    --card-foreground: oklch(0.985 0 0);
+    --popover: oklch(0.145 0 0);
+    --popover-foreground: oklch(0.985 0 0);
+    --primary: oklch(0.985 0 0);
+    --true-primary: oklch(0.54 0.15 249.67);
+    /* --true-primary: oklch(0.59 0.23 278.87); */
+    --true-primary-two: oklch(0.39 0.15 266.19);
+    --true-primary-three: oklch(0.38 0.03 237.56);
+    --true-primary-four: oklch(0.74 0.17 58.85);
+    --primary-foreground: oklch(0.205 0 0);
+    --success: oklch(0.627 0.194 149.214);
+    --success-foreground: oklch(0.985 0 0);
+    --warning: oklch(0.795 0.184 86.047);
+    --warning-foreground: oklch(0.985 0 0);
+    --secondary: oklch(0.269 0 0);
+    --secondary-foreground: oklch(0.985 0 0);
+    --muted: oklch(0.269 0 0);
+    --muted-foreground: oklch(0.708 0 0);
+    --accent: oklch(0.269 0 0);
+    --accent-foreground: oklch(0.985 0 0);
+    --destructive: oklch(0.396 0.141 25.723);
+    --destructive-foreground: oklch(0.637 0.237 25.331);
+    --border: oklch(0.269 0 0);
+    --input: oklch(0.269 0 0);
+    --ring: oklch(0.439 0 0);
+    --chart-1: 220 70% 50%;
+    --chart-2: 160 60% 45%;
+    --chart-3: 30 80% 55%;
+    --chart-4: 280 65% 60%;
+    --chart-5: 340 75% 55%;
+    --sidebar: oklch(0.205 0 0);
+    --sidebar-foreground: oklch(0.985 0 0);
+    --sidebar-primary: oklch(0.985 0 0);
+    --sidebar-primary-foreground: oklch(0.985 0 0);
+    --sidebar-accent: oklch(0.94 0 0);
+    --sidebar-accent-foreground: oklch(0.985 0 0);
+    --sidebar-border: oklch(0.269 0 0);
+    --sidebar-ring: oklch(0.439 0 0);
+}
+
+@layer base {
+    * {
+        @apply border-border;
+    }
+
+    body {
+        @apply bg-background text-foreground;
+    }
+}
+
+/* CSS Class */
+@keyframes borderAnimation {
+    0% {
+        border-image-source: linear-gradient(to bottom right, #b827fc, #2c90fc, #b8fd33, #fec837, #fd1892);
+    }
+
+    25% {
+        border-image-source: linear-gradient(to bottom right, #fd1892, #b827fc, #2c90fc, #b8fd33, #fec837);
+    }
+
+    50% {
+        border-image-source: linear-gradient(to bottom right, #fec837, #fd1892, #b827fc, #2c90fc, #b8fd33);
+    }
+
+    75% {
+        border-image-source: linear-gradient(to bottom right, #b8fd33, #fec837, #fd1892, #b827fc, #2c90fc);
+    }
+
+    100% {
+        border-image-source: linear-gradient(to bottom right, #b827fc, #2c90fc, #b8fd33, #fec837, #fd1892);
+    }
+}
+
+.yarl__thumbnails_thumbnail_active {
+    border-width: 5px !important;
+    background-color: #302244;
+    border: 5px solid transparent;
+    border-image-source: linear-gradient(to bottom right, #b827fc, #2c90fc, #b8fd33, #fec837, #fd1892);
+    border-image-slice: 1;
+    height: 200px;
+    margin: 20px auto;
+    width: 200px;
+    border-radius: 0px !important;
+    animation: borderAnimation 2s linear infinite;
+    object-fit: cover !important;
+    padding: 0 !important;
+}
+
+.yarl__thumbnails_thumbnail {
+    border-radius: 0px !important;
+    object-fit: cover !important;
+    padding: 0 !important;
+}
+
+.yarl__thumbnails_thumbnail .yarl__slide_image {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    padding: 0 !important;
+}
+
+.rainbow-button {
+    /* border: calc(0.04 * var(--m)) solid transparent; */
+    position: relative;
+    color: var(--primary);
+    /* border-radius: calc(0.2 * var(--m)); */
+    /* padding: calc(0.1 * var(--m)) calc(1 * var(--m)); */
+    display: flex;
+    justify-content: center;
+    cursor: pointer;
+
+    background:
+        /* linear-gradient(#fffffff3), */ linear-gradient(
+        90deg,
+        var(--orange),
+        var(--yellow),
+        var(--green),
+        var(--blue),
+        var(--purple),
+        var(--pink),
+        var(--red)
+    );
+    background-origin: border-box;
+    background-clip: padding-box, border-box, border-box;
+    background-size: 200%;
+    animation: animate 2s infinite linear;
+}
+
+.rainbow-button::before {
+    content: '';
+    background: linear-gradient(90deg, var(--orange), var(--yellow), var(--green), var(--blue), var(--purple), var(--pink), var(--red));
+    height: 30%;
+    width: 60%;
+    position: absolute;
+    bottom: -20%;
+    z-index: -5;
+    background-size: 200%;
+    animation: animate 2s infinite linear;
+    filter: blur(calc(0.8 * var(--m)));
+}
+
+.rainbow-button:hover,
+.rainbow-button:hover::before {
+    animation: animate 0.5s infinite linear;
+}
+
+@keyframes animate {
+    0% {
+        background-position: 0;
+    }
+
+    100% {
+        background-position: 200%;
+    }
+}
+
+@media screen and (max-width: 1000px) {
+    :root {
+        --m: 2rem;
+    }
+}
