@@ -31,10 +31,14 @@ const KESSPaymentMethods = () => {
                     <img className="size-[40px] rounded-[4px]" src="/assets/icons/cards.png" alt="" />
                     <div className="flex w-full items-center justify-between">
                         <div className="flex-1">
-                            <p className="text-[16px] font-semibold">Credit/Debit Card</p>
+                            <p className="text-[16px] font-semibold">Pay Now</p>
                             <div className="flex gap-1">
-                                <img className="h-4" src="/assets/icons/visa.png" alt="" />
-                                <img className="h-4" src="/assets/icons/master.png" alt="" />
+                                <img className="h-5" src="/assets/icons/KHQR.png" alt="" />
+                                <img className="h-5" src="/assets/icons/visa.png" alt="" />
+                                <img className="h-5" src="/assets/icons/master.png" alt="" />
+                                <img className="h-5" src="/assets/icons/UPI.png" alt="" />
+                                <img className="h-5" src="/assets/icons/Alipay.png" alt="" />
+                                <img className="h-5" src="/assets/icons/WechatPay.png" alt="" />
                             </div>
                             {/* <p className="text-[12px] font-normal text-gray-600 dark:text-gray-200">Scan to pay with any banking app</p> */}
                         </div>
