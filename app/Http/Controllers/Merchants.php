@@ -11,7 +11,7 @@ class Merchants
     public function get_configs()
     {
         $configs = [
-            'url'               => 'https://devwebpayment.kesspay.io',
+            'url'               => env("KESS_API_URL"),
             'username'          => env("LOCAL_USERNAME"),
             'password'          => env("LOCAL_PASSWORD"),
             'client_id'         => env("LOCAL_CLIENT_ID"),
