@@ -95,7 +95,7 @@ Route::get('/paymentBakong/success', function () {
 Route::get('/test-payment', function () {
    $merchant = new Merchants();
 
-   $tran_id = 'tran_id_12345';
+   $tran_id = rand(10000000000000,90000000000000);
    $currency = 'USD';
    $continue_success_url = env('APP_URL') . "/kess/success";
 
