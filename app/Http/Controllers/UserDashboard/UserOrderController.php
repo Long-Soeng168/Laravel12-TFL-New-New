@@ -128,7 +128,7 @@ class UserOrderController extends Controller implements HasMiddleware
 
 
         $paymentLink = null;
-        if ($user_order->status != 'paid') {
+        if ($user_order->status == 'pending') {
             // Start KESS Payment
             $merchant = new Merchants();
 
