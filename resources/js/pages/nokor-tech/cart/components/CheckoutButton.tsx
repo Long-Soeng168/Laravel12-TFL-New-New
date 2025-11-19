@@ -42,7 +42,7 @@ const CheckoutButton = () => {
         const orderData = {
             shop_id: cartItems[0]?.shop_id || null,
             note: '',
-            total_amount: +total_amount + shipping,
+            total_amount: Number(total_amount) + Number(shipping),
             payment_method: paymentOption,
             currency: currency,
             tran_id: tran_id,
