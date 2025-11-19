@@ -112,7 +112,7 @@ class UserOrderController extends Controller implements HasMiddleware
         }
 
         $currency = $user_order->currency;
-        $continue_success_url = env('APP_URL') . "/kess/success";
+        $continue_success_url = env('APP_URL') . "/kess/success"; 
 
 
 

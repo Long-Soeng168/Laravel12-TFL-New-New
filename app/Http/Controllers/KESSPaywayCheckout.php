@@ -94,110 +94,6 @@ class KESSPaywayCheckout extends Controller
         ));
     }
 
-    public function callback(Request $request)
-    {
-        // return $request->all();
-        $order = Order::where('tran_id', $request->tran_id)->firstOrFail();
-
-        $req_time   = $order->req_time; // UTC format from DB
-        $merchantId = config('payway.merchant_id');
-        $tran_id    = $order->tran_id;
-
-        $hashString = $req_time . $merchantId . $tran_id;
-        $hash       = $this->payWayService->getHash($hashString);
-
-        $client = new Client();
-        $headers = [
-            'Content-Type' => 'application/json'
-        ];
-
-        $body = json_encode([
-            'req_time'    => $req_time,
-            'merchant_id' => $merchantId,
-            'tran_id'     => $tran_id,
-            'hash'        => $hash,
-        ]);
-
-        $guzzleRequest = new GuzzleRequest(
-            'POST',
-            config('payway.base_api_domain') . '/api/payment-gateway/v1/payments/check-transaction-2',
-            $headers,
-            $body
-        );
-
-        try {
-            $res    = $client->send($guzzleRequest);
-            $result = json_decode((string) $res->getBody(), true);
-
-            $order->update([
-                'transaction_detail' => $result,
-            ]);
-
-            $statusCode = $result['status']['code'] ?? null;
-
-            if ($statusCode === '00') {
-                $paymentStatus = $result['data']['payment_status'] ?? null;
-                $order_status  = $paymentStatus === 'APPROVED' ? 'paid' : 'pending';
-
-                $order->update([
-                    'status'            => $order->status == 'pending' ? $order_status : $order->status,
-                    'payment_status'    => $paymentStatus,
-                ]);
-
-                if ($paymentStatus === 'APPROVED') {
-
-                    $job = QueueJob::where('order_id', $order->id)->first();
-                    if ($job) return;
-
-                    $queueJob = QueueJob::create([
-                        'job_type' => 'payout_to_shop',
-                        'order_id' => $order->id,
-                        'payload' => ['order_id' => $order->id, 'order_number' => $order->order_number],
-                        'delay_second' => 120, // time delay to run after creation (48h =  48 * 3600)
-                        'run_at' => null,           // not started yet
-                    ]);
-
-                    // 2️⃣ Dispatch to Laravel queue with delay
-                    ProcessQueueJob::dispatch($queueJob)->delay(120);
-                }
-
-                return response()->json([
-                    'message'  => 'Success',
-                    'payment_status' => $paymentStatus,
-                    'tran_id'  => $tran_id,
-                    'response' => $order,
-                ], 200);
-            } else {
-                Log::warning('ABA callback returned error', [
-                    'tran_id' => $order->tran_id,
-                    'response' => $result,
-                ]);
-
-                return response()->json([
-                    'tran_id'  => $tran_id,
-                    'response' => $result,
-                ], 500);
-            }
-        } catch (\Throwable $e) {
-            Log::error('ABA callback failed', [
-                'tran_id' => $order->tran_id,
-                'error'   => $e->getMessage(),
-            ]);
-
-            return response()->json([
-                'message' => 'Failed to process callback',
-                'error'   => $e->getMessage(),
-            ], 500);
-        }
-
-        // Safe final return
-        return response()->json([
-            'message'  => 'Success',
-            'tran_id'  => $tran_id,
-            'status'   => $result['status']['message'] ?? null,
-            'response' => $result,
-        ]);
-    }
     public function cancel(Request $request)
     {
         $order = Order::where('tran_id', $request->tran_id)->firstOrFail();
@@ -259,5 +155,53 @@ class KESSPaywayCheckout extends Controller
         //     'message' => 'Success',
         //     'request' => $request->all(),
         // ]);
+    }
+    public function callback(Request $request)
+    {
+        $order = Order::where('tran_id', $request->out_trade_no)->first();
+
+
+        if ($order->status == 'pending' && $order->payment_status != 'SUCCESS') {
+            $merchant = new Merchants();
+            $result = $merchant->queryOrder($request->out_trade_no);
+            $payment_status = $result['data']['status'];
+            $order->update([
+                'status' => $payment_status == 'SUCCESS' ? 'paid' : 'pending',
+                'payment_status' => $payment_status,
+            ]);
+        }
+
+        // dd($order->notify_telegram_status);
+        if ($order->notify_telegram_status != 'completed') {
+
+            $result = TelegramHelper::sendOrderNotification($order);
+
+            if ($result['success'] === true) {
+                // Telegram sent — mark completed
+                $order->update([
+                    'notify_telegram_status' => 'completed'
+                ]);
+            } else {
+                // Telegram failed — mark failed
+                $order->update([
+                    'notify_telegram_status' => 'failed'
+                ]);
+
+                // optional: log it
+                Log::warning('Telegram notify failed for order ' . $order->id . ': ' . $result['message']);
+            }
+        }
+
+
+        // if ($order) {
+        //     return redirect("/user-orders/{$order->id}?order_success=1&order_id=" . $order->id);
+        // } else {
+        //     return redirect('/shopping-cart?order_fail=1');
+        // }
+
+        return response()->json([
+            'message' => 'Success',
+            'request' => $request->all(),
+        ]);
     }
 }

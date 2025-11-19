@@ -25,6 +25,8 @@ class Merchants
 
     public function createOrder($tran_id, $total_amount, $currency, $continue_success_url)
     {
+        $callback_url = env('APP_URL') . "/kess/callback";
+
         $params = [
             "service" => "webpay.acquire.createOrder",
             "sign_type" => "MD5",
@@ -33,7 +35,7 @@ class Merchants
             "body" => "Order Checkout",
             "total_amount" => $total_amount,
             "currency" => $currency,
-            "notify_url" => "",
+            "notify_url" => $callback_url,
             "redirect_url" => $continue_success_url,
             "expires_in" => 3600
         ];
