@@ -45,7 +45,7 @@ const ScrollToTopButton2 = () => {
 
 const StyledWrapper = styled.div`
     position: fixed;
-    bottom: 120px;
+    bottom: 200px;
     right: 20px;
     z-index: 50;
     .scrolldown {
