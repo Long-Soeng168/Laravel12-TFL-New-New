@@ -124,7 +124,6 @@ class OrderController extends Controller implements HasMiddleware
                 ->orderBy('id', 'desc')
                 ->first();
 
-
             $nextNumber = 1;
             if ($lastOrder && $lastOrder->order_number) {
                 $parts = explode('-', $lastOrder->order_number);

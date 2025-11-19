@@ -100,9 +100,21 @@ class UserOrderController extends Controller implements HasMiddleware
             abort(403, 'Unauthorized resource');
         }
 
-        $tran_id = $user_order->tran_id;
+        if ($user_order->status == 'pending') {
+            $tran_id = uniqid();
+            $user_order->update(
+                [
+                    'tran_id' => $tran_id,
+                ]
+            );
+        } else {
+            $tran_id = $user_order->tran_id;
+        }
+
         $currency = $user_order->currency;
         $continue_success_url = env('APP_URL') . "/kess/success";
+
+
 
         // $amount = $user_order->total_amount - $user_order->shipping_price;
         // $shipping = $user_order->shipping_price;
@@ -128,7 +140,7 @@ class UserOrderController extends Controller implements HasMiddleware
                 $decoded = json_decode($result, true);
                 $result = $decoded ?? ['raw' => $result];
             }
-            
+
             $paymentLink = $result['data']['payment_link'] ?? null;
             // dd($paymentLink);
         }
