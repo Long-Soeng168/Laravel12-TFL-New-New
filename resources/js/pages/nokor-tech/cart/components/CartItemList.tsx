@@ -3,14 +3,16 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useCart } from '@/contexts/cart-contexts';
 import useTranslation from '@/hooks/use-translation';
+import { usePage } from '@inertiajs/react';
 import { Minus, Plus, Trash2 } from 'lucide-react';
 import CheckoutButton from './CheckoutButton';
 import ClearCartButton from './ClearCartButton';
 
 const CartItemList = () => {
     const { cartItems, handleQuantityChange, removeFromCart } = useCart();
+    const { SHIPPING_PRICE_USD } = usePage<any>().props;
     const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.cartQuantity, 0);
-    const shipping = 2;
+    const shipping = SHIPPING_PRICE_USD || 0;
     const total = subtotal + shipping;
 
     const { t } = useTranslation();
