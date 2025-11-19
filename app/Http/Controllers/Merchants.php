@@ -45,6 +45,7 @@ class Merchants
 
         try {
             $resp = $this->callHttp($url, $params);
+            dd($resp);
             $this->verifySignatureForResponse($resp["sign"], $resp["sign_type"], $resp["data"], $this->get_configs()['api_secret_key']);
             return json_encode($resp);
         } catch (\Throwable $th) {
