@@ -107,15 +107,15 @@ const CartItemList = () => {
                                 <div className="space-y-2">
                                     <div className="flex justify-between text-sm">
                                         <span>{t('Subtotal')}</span>
-                                        <span>${subtotal.toFixed(2)}</span>
+                                        <span>${subtotal?.toFixed(2)}</span>
                                     </div>
                                     <div className="flex justify-between text-sm">
                                         <span>{t('Shipping')}</span>
-                                        <span>${shipping.toFixed(2)}</span>
+                                        <span>${shipping?.toFixed(2)}</span>
                                     </div>
                                     <div className="flex justify-between font-medium">
                                         <span>{t('Total')}</span>
-                                        <span>${total.toFixed(2)}</span>
+                                        <span>${total?.toFixed(2)}</span>
                                     </div>
                                 </div>
 
