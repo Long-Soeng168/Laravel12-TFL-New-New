@@ -48,9 +48,9 @@ class ABAPaywayCheckout extends Controller
         // dd($merchant_id);
         return Inertia::render("nokor-tech/cart/ShoppingCart", [
             'req_time' => $req_time,
-            'shipping' => 2,
+            'shipping' => env('SHIPPING_PRICE_USD') ?? 0,
             'currency' => "USD",
-            'paymentOption' => "abapay_khqr",
+            'paymentOption' => "kess_webpay",
             'merchant_id' => $merchant_id,
             'tran_id' => $tran_id,
             'app_url' => config('app.url'),
@@ -144,7 +144,7 @@ class ABAPaywayCheckout extends Controller
                 ]);
 
                 if ($paymentStatus === 'APPROVED') {
-                    
+
                     $job = QueueJob::where('order_id', $order->id)->first();
                     if ($job) return;
 
