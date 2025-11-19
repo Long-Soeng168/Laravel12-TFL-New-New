@@ -38,6 +38,7 @@ class Merchants
             "expires_in" => 3600
         ];
 
+        dd($params);
         $params['sign'] = $this->signature($params, $this->get_configs()['api_secret_key']);
 
         $url = $this->get_configs()['url'] . '/api/mch/v2/gateway';
