@@ -12,7 +12,8 @@ const CartItemList = () => {
     const { cartItems, handleQuantityChange, removeFromCart } = useCart();
     const { SHIPPING_PRICE_USD } = usePage<any>().props;
     const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.cartQuantity, 0);
-    const shipping = SHIPPING_PRICE_USD || 0;
+    const shipping = SHIPPING_PRICE_USD ?? 0;
+
     const total = subtotal + shipping;
 
     const { t } = useTranslation();
@@ -72,7 +73,7 @@ const CartItemList = () => {
                                                         </div>
 
                                                         <div className="text-right">
-                                                            <div className="font-medium">${(item.price * item.cartQuantity)?.toFixed(2)}</div>
+                                                            <div className="font-medium">${(item.price * item.cartQuantity).toFixed(2)}</div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -107,15 +108,15 @@ const CartItemList = () => {
                                 <div className="space-y-2">
                                     <div className="flex justify-between text-sm">
                                         <span>{t('Subtotal')}</span>
-                                        <span>${subtotal?.toFixed(2)}</span>
+                                        <span>${subtotal.toFixed(2)}</span>
                                     </div>
                                     <div className="flex justify-between text-sm">
                                         <span>{t('Shipping')}</span>
-                                        <span>${shipping?.toFixed(2)}</span>
+                                        <span>${shipping.toFixed(2)}</span>
                                     </div>
                                     <div className="flex justify-between font-medium">
                                         <span>{t('Total')}</span>
-                                        <span>${total?.toFixed(2)}</span>
+                                        <span>${total.toFixed(2)}</span>
                                     </div>
                                 </div>
 
