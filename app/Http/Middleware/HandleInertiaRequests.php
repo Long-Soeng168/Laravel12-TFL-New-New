@@ -72,7 +72,7 @@ class HandleInertiaRequests extends Middleware
             'locale' => session('locale'),
             'can_switch_language' => config('app.can_switch_language'),
             'CKEDITOR_USE_FILE_FULL_PATH' => env('CKEDITOR_USE_FILE_FULL_PATH'),
-            'SHIPPING_PRICE_USD' => env('SHIPPING_PRICE_USD'),
+            'SHIPPING_PRICE_USD' => (Integer) env('SHIPPING_PRICE_USD') ?? 0,
 
             'application_info' => ApplicationInfo::first(),
             'links' => Link::where('status', 'active')->orderBy('order_index')->get(),

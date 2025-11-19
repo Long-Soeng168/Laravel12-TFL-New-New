@@ -12,7 +12,7 @@ const CartItemList = () => {
     const { cartItems, handleQuantityChange, removeFromCart } = useCart();
     const { SHIPPING_PRICE_USD } = usePage<any>().props;
     const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.cartQuantity, 0);
-    const shipping = SHIPPING_PRICE_USD ?? 0;
+    const shipping = SHIPPING_PRICE_USD || 0;
 
     const total = subtotal + shipping;
 
