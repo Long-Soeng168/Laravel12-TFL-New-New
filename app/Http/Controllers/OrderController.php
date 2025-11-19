@@ -93,7 +93,7 @@ class OrderController extends Controller implements HasMiddleware
         //     'message' => 'Order received successfully',
         // ]);
         // Validate request
-        dd($request->all());
+        // dd($request->all());
         $validated = $request->validate([
             'shop_id' => 'required|exists:shops,id',
             'note'       => 'nullable|string',
