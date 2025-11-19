@@ -72,7 +72,7 @@ const CartItemList = () => {
                                                         </div>
 
                                                         <div className="text-right">
-                                                            <div className="font-medium">${(item.price * item.cartQuantity).toFixed(2)}</div>
+                                                            <div className="font-medium">${(item.price * item.cartQuantity)?.toFixed(2)}</div>
                                                         </div>
                                                     </div>
                                                 </div>
