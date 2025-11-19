@@ -70,7 +70,7 @@ Route::get('/aba_test_checkout', [ABAPaywayCheckout::class, 'showTestCheckoutFor
 
 Route::get('/pdf_viewer', function () {
    return view('pdf_viewer');
-}); 
+});
 
 Route::get('/qr', function () {
    return Inertia::render('QRPage');
@@ -95,8 +95,12 @@ Route::get('/paymentBakong/success', function () {
 Route::get('/test-payment', function () {
    $merchant = new Merchants();
 
+   $tran_id = 'tran_id_12345';
+   $currency = 'USD';
+   $continue_success_url = env('APP_URL') . "/kess/success";
+
    // You can test either createOrder() or queryOrder()
-   $result = $merchant->createOrder();
+   $result = $merchant->createOrder($tran_id, 1, $currency, $continue_success_url);
 
    // Decode JSON if it's a string
    if (is_string($result)) {
