@@ -121,7 +121,7 @@ const CartItemList = () => {
                                 </div>
 
                                 {/* Checkout Button */}
-                                <CheckoutButton />
+                                {cartItems?.length > 0 && <CheckoutButton />}
                             </CardContent>
                         </Card>
                     </div>
