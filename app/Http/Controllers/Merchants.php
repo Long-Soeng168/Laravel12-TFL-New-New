@@ -30,7 +30,7 @@ class Merchants
             "sign_type" => "MD5",
             "seller_code" => $this->get_configs()['seller_code'],
             "out_trade_no" => $tran_id,
-            "body" => "TEST_PAYMENT_395465",
+            "body" => "Order Checkout",
             "total_amount" => $total_amount,
             "currency" => $currency,
             "notify_url" => "",
