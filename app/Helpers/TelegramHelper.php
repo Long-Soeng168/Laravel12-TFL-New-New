@@ -165,6 +165,46 @@ class TelegramHelper
         }
     }
 
+    public static function sendOrderNotification($order)
+    {
+        // dd($order);
+        $token  = env('TELEGRAM_BOT_TOKEN');
+        $chatId = env('TELEGRAM_GROUP_CHAT_ID');
+
+        if (!$token || !$chatId) {
+            return ['success' => false, 'message' => 'Telegram configuration is missing.'];
+        }
+
+        try {
+            // Construct the message text for a successful order
+            $text = "✅ *New Order Completed!*\n\n"
+                . "*Order ID:* " . $order->id . "\n"
+                . "*User Name:* " . $order->buyer->name . "\n"
+                . "*Phone:* " . $order->buyer->phone . "\n"
+                . "*Total Amount:* $" . number_format($order->total_amount, 2) . "\n"
+                . "*Payment Status:* " . $order->payment_status . "\n"
+                . "*Order Date:* " . $order->created_at->format('Y-m-d H:i');
+
+            // Send message via Telegram Bot API
+            $response = Http::post("https://api.telegram.org/bot{$token}/sendMessage", [
+                'chat_id'    => $chatId,
+                'text'       => $text,
+                'parse_mode' => 'Markdown',
+            ]);
+
+            if ($response->successful()) {
+                return ['success' => true, 'message' => 'Order notification sent successfully!'];
+            } else {
+                Log::error('Telegram Order Notification failed: ' . $response->body());
+                return ['success' => false, 'message' => 'Failed to send notification. ' . $response->body()];
+            }
+        } catch (\Exception $e) {
+            Log::error('Telegram Order Notification exception: ' . $e->getMessage());
+            return ['success' => false, 'message' => 'An error occurred: ' . $e->getMessage()];
+        }
+    }
+
+
 
     public static function sendMessage($message)
     {
@@ -178,10 +218,7 @@ class TelegramHelper
         try {
             // Construct the message text
             $text = "📩 *New Message Received:*\n\n"
-                . "*Name:* " . ($message->name ?? '-') . "\n"
-                . "*Phone:* " . $message->phone . "\n"
-                . "*Email:* " . ($message->email ?? '-') . "\n"
-                . "*Message:* " . ($message->message ?? '-') . "\n";
+                . "*Phone:* " . $message->phone . "\n";
 
             // Send message via Telegram Bot API
             $response = Http::post("https://api.telegram.org/bot{$token}/sendMessage", [

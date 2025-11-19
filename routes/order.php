@@ -15,12 +15,12 @@ Route::post('/orders/{id}/status', [OrderController::class, 'updateStatus']);
 Route::get('/showTestCheckoutForm', [ABAPaywayCheckout::class, 'showTestCheckoutForm']);
 
 // Start Using
-Route::get('/shopping-cart', [ABAPaywayCheckout::class, 'shopping_cart'])->middleware('auth');
+// Route::get('/shopping-cart', [ABAPaywayCheckout::class, 'shopping_cart'])->middleware('auth');
 
-Route::post('/aba/get-hash', [ABAPaywayCheckout::class, 'get_hash']);
+// Route::post('/aba/get-hash', [ABAPaywayCheckout::class, 'get_hash']);
 
 // Route::post('/aba/callback', [ABAPaywayCheckout::class, 'callback']);
-Route::get('/aba/callback', [ABAPaywayCheckout::class, 'callback']);
+// Route::get('/aba/callback', [ABAPaywayCheckout::class, 'callback']);
 
-Route::get('/aba/success', [ABAPaywayCheckout::class, 'success']);
-Route::get('/aba/cancel', [ABAPaywayCheckout::class, 'cancel']);
+// Route::get('/aba/success', [ABAPaywayCheckout::class, 'success']);
+// Route::get('/aba/cancel', [ABAPaywayCheckout::class, 'cancel']);

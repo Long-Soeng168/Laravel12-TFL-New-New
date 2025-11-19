@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\TelegramHelper;
 use App\Jobs\ProcessQueueJob;
 use App\Models\Order;
 use App\Models\QueueJob;
@@ -48,9 +49,9 @@ class KESSPaywayCheckout extends Controller
         // dd($merchant_id);
         return Inertia::render("nokor-tech/cart/ShoppingCart", [
             'req_time' => $req_time,
-            'shipping' => 2,
+            'shipping' => env('SHIPPING_PRICE_USD') ?? 0,
             'currency' => "USD",
-            'paymentOption' => "abapay_khqr",
+            'paymentOption' => "kess_webpay",
             'merchant_id' => $merchant_id,
             'tran_id' => $tran_id,
             'app_url' => config('app.url'),
@@ -216,18 +217,38 @@ class KESSPaywayCheckout extends Controller
     {
         $merchant = new Merchants();
 
-        // You can test either createOrder() or queryOrder()
         $result = $merchant->queryOrder($request->out_trade_no);
 
         $payment_status = $result['data']['status'];
-
-        // return ($result['data']['status']);
 
         $order = Order::where('tran_id', $request->out_trade_no)->first();
         $order->update([
             'status' => $payment_status == 'SUCCESS' ? 'paid' : 'pending',
             'payment_status' => $payment_status,
         ]);
+
+        // dd($order->notify_telegram_status);
+        if ($order->notify_telegram_status != 'completed') {
+
+            $result = TelegramHelper::sendOrderNotification($order);
+
+            if ($result['success'] === true) {
+                // Telegram sent — mark completed
+                $order->update([
+                    'notify_telegram_status' => 'completed'
+                ]);
+            } else {
+                // Telegram failed — mark failed
+                $order->update([
+                    'notify_telegram_status' => 'failed'
+                ]);
+
+                // optional: log it
+                Log::warning('Telegram notify failed for order ' . $order->id . ': ' . $result['message']);
+            }
+        }
+
+
         if ($order) {
             return redirect("/user-orders/{$order->id}?order_success=1&order_id=" . $order->id);
         } else {
