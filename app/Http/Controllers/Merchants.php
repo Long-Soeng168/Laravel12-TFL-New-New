@@ -25,7 +25,7 @@ class Merchants
 
     public function createOrder($tran_id, $total_amount, $currency, $continue_success_url)
     {
-        $callback_url = env('APP_URL') . "/kess/callback";
+        $callback_url = env('APP_URL') . "/kess/callback?tran_id=" . $tran_id;
 
         $params = [
             "service" => "webpay.acquire.createOrder",
