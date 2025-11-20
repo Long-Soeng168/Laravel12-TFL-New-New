@@ -75,26 +75,46 @@ class UserOrderController extends Controller implements HasMiddleware
         ]);
     }
 
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create(Request $request)
+    {
+        dd('Create Function');
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(Request $request)
+    {
+        dd('Store Function');
+    }
+
+    /**
+     * Display the specified resource.
+     */
     public function show(Order $user_order)
     {
         if ($user_order->user_id != Auth::user()->id) {
             abort(403, 'Unauthorized resource');
         }
-        $tran_id = $user_order->tran_id;
 
-        // if ($user_order->status == 'pending') {
-        //     $tran_id = uniqid();
-        //     $user_order->update(
-        //         [
-        //             'tran_id' => $tran_id,
-        //         ]
-        //     );
-        // } else {
-        //     $tran_id = $user_order->tran_id;
-        // }
+        if ($user_order->status == 'pending') {
+            $tran_id = uniqid();
+            $user_order->update(
+                [
+                    'tran_id' => $tran_id,
+                ]
+            );
+        } else {
+            $tran_id = $user_order->tran_id;
+        }
 
         $currency = $user_order->currency;
-        $continue_success_url = env('APP_URL') . "/kess/success";
+        $continue_success_url = env('APP_URL') . "/kess/success"; 
+
+
 
         // $amount = $user_order->total_amount - $user_order->shipping_price;
         // $shipping = $user_order->shipping_price;
@@ -109,37 +129,20 @@ class UserOrderController extends Controller implements HasMiddleware
 
         $paymentLink = null;
         if ($user_order->status == 'pending') {
-            if ($user_order->payment_status != 'SUCCESS') {
-                $merchant = new Merchants();
-                $result = $merchant->queryOrder($user_order->tran_id);
+            // Start KESS Payment
+            $merchant = new Merchants();
 
-                dd($result);
+            // You can test either createOrder() or queryOrder()
+            $result = $merchant->createOrder($tran_id, $user_order->total_amount, $currency, $continue_success_url);
 
-                if ($result) {
-                    $payment_status = $result['data']['status'];
-                    $user_order->update([
-                        'transaction_detail' => $result['data'],
-                        'transaction_id' => $result['data']['transaction_id'],
-                        'status' => $payment_status == 'SUCCESS' ? 'paid' : 'pending',
-                        'payment_status' => $payment_status,
-                    ]);
-                } else {
-                    // Start KESS Payment
-                    $merchant = new Merchants();
-
-                    // You can test either createOrder() or queryOrder()
-                    $result = $merchant->createOrder($tran_id, $user_order->total_amount, $currency, $continue_success_url, $user_order->id);
-
-                    // Decode JSON if it's a string
-                    if (is_string($result)) {
-                        $decoded = json_decode($result, true);
-                        $result = $decoded ?? ['raw' => $result];
-                    }
-
-                    $paymentLink = $result['data']['payment_link'] ?? null;
-                    // dd($paymentLink);
-                }
+            // Decode JSON if it's a string
+            if (is_string($result)) {
+                $decoded = json_decode($result, true);
+                $result = $decoded ?? ['raw' => $result];
             }
+
+            $paymentLink = $result['data']['payment_link'] ?? null;
+            // dd($paymentLink);
         }
 
         return Inertia::render('user-dashboard/orders/Show', [
@@ -149,6 +152,32 @@ class UserOrderController extends Controller implements HasMiddleware
         ]);
     }
 
+    /**
+     * Show the form for editing the specified resource.
+     */
+
+    public function edit(Item $user_order)
+    {
+        if ($user_order->user_id != Auth::user()->id) {
+            abort(404);
+        }
+        $editData = $user_order->load('order_items.item.images');
+        dd($editData);
+        return Inertia::render('user-dashboard/orders/Create', [
+            'editData' => $editData,
+        ]);
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, Order $user_order)
+    {
+        if ($user_order->user_id != Auth::user()->id) {
+            abort(404);
+        }
+        dd($request->all());
+    }
 
     public function update_status(Request $request, Item $user_item)
     {

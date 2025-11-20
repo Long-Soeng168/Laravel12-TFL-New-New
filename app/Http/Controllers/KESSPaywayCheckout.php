@@ -111,46 +111,47 @@ class KESSPaywayCheckout extends Controller
     }
     public function success(Request $request)
     {
-        // $merchant = new Merchants();
+        $merchant = new Merchants();
 
-        // $result = $merchant->queryOrder($request->out_trade_no);
+        $result = $merchant->queryOrder($request->out_trade_no);
 
-        // $payment_status = $result['data']['status'];
+        $payment_status = $result['data']['status'];
 
         $order = Order::where('tran_id', $request->out_trade_no)->first();
-        // $order->update([
-        //     'status' => $payment_status == 'SUCCESS' ? 'paid' : 'pending',
-        //     'payment_status' => $payment_status,
-        // ]);
+        $order->update([
+            'status' => $payment_status == 'SUCCESS' ? 'paid' : 'pending',
+            'payment_status' => $payment_status,
+            'transaction_detail' => $result['data'],
+            'transaction_id' => $result['data']['transaction_id'],
+        ]);
 
-        // // dd($order->notify_telegram_status);
-        // if ($order->notify_telegram_status != 'completed') {
+        // dd($order->notify_telegram_status);
+        if ($order->notify_telegram_status != 'completed') {
 
-        //     $result = TelegramHelper::sendOrderNotification($order);
+            $result = TelegramHelper::sendOrderNotification($order);
 
-        //     if ($result['success'] === true) {
-        //         // Telegram sent — mark completed
-        //         $order->update([
-        //             'notify_telegram_status' => 'completed'
-        //         ]);
-        //     } else {
-        //         // Telegram failed — mark failed
-        //         $order->update([
-        //             'notify_telegram_status' => 'failed'
-        //         ]);
+            if ($result['success'] === true) {
+                // Telegram sent — mark completed
+                $order->update([
+                    'notify_telegram_status' => 'completed'
+                ]);
+            } else {
+                // Telegram failed — mark failed
+                $order->update([
+                    'notify_telegram_status' => 'failed'
+                ]);
 
-        //         // optional: log it
-        //         Log::warning('Telegram notify failed for order ' . $order->id . ': ' . $result['message']);
-        //     }
-        // }
+                // optional: log it
+                Log::warning('Telegram notify failed for order ' . $order->id . ': ' . $result['message']);
+            }
+        }
 
 
-        return redirect("/user-orders/{$order->id}?order_success=1&order_id=" . $order->id);
-        // if ($order) {
-        //     return redirect("/user-orders/{$order->id}?order_success=1&order_id=" . $order->id);
-        // } else {
-        //     return redirect('/shopping-cart?order_fail=1');
-        // }
+        if ($order) {
+            return redirect("/user-orders/{$order->id}?order_success=1&order_id=" . $order->id);
+        } else {
+            return redirect('/shopping-cart?order_fail=1');
+        }
 
         // return response()->json([
         //     'message' => 'Success',
@@ -159,28 +160,14 @@ class KESSPaywayCheckout extends Controller
     }
     public function callback(Request $request)
     {
-        $order = Order::where('id', $request->order_id)->first();
-
-        if ($order) {
-            $order->update([
-                'transaction_detail' => $request->order_id,
-                // 'notes' => 'requested',
-            ]);
-        } else {
-            $order->update([
-                'transaction_detail' => 'Failed',
-                // 'notes' => 'requested',
-            ]);
-        }
+        $order = Order::where('tran_id', $request->out_trade_no)->first();
 
 
         if ($order->status == 'pending' && $order->payment_status != 'SUCCESS') {
             $merchant = new Merchants();
-            $result = $merchant->queryOrder($order->tran_id);
+            $result = $merchant->queryOrder($request->out_trade_no);
             $payment_status = $result['data']['status'];
             $order->update([
-                'transaction_detail' => $result['data'],
-                'transaction_id' => $result['data']['transaction_id'],
                 'status' => $payment_status == 'SUCCESS' ? 'paid' : 'pending',
                 'payment_status' => $payment_status,
             ]);
