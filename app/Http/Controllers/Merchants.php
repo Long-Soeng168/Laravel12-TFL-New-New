@@ -71,9 +71,13 @@ class Merchants
 
         try {
             $resp = $this->callHttp($url, $params);
-            dd($resp);
-            $this->verifySignatureForResponse($resp["sign"], $resp["sign_type"], $resp["data"], $this->get_configs()['api_secret_key']);
-            return $resp;
+
+            if ($resp['success']) {
+                $this->verifySignatureForResponse($resp["sign"], $resp["sign_type"], $resp["data"], $this->get_configs()['api_secret_key']);
+                return $resp;
+            } else {
+                return ($resp);
+            }
         } catch (\Throwable $th) {
             throw ($th);
         }
