@@ -109,10 +109,12 @@ class UserOrderController extends Controller implements HasMiddleware
 
         $paymentLink = null;
         if ($user_order->status == 'pending') {
-
             if ($user_order->payment_status != 'SUCCESS') {
                 $merchant = new Merchants();
                 $result = $merchant->queryOrder($user_order->tran_id);
+
+                dd($result);
+
                 if ($result) {
                     $payment_status = $result['data']['status'];
                     $user_order->update([
