@@ -52,7 +52,7 @@ class Merchants
             return json_encode($resp);
         } catch (\Throwable $th) {
             // print_r($th);
-            dd($th);
+            // dd($th);
         }
     }
 
