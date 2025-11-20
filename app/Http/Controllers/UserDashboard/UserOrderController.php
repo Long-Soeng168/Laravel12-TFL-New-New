@@ -118,13 +118,6 @@ class UserOrderController extends Controller implements HasMiddleware
                 $data = $result['data'] ?? null;
 
                 if (!$data) {
-                    // handle no data from API
-                    $user_order->update([
-                        'transaction_detail' => null,
-                        'transaction_id'     => null,
-                        'status'             => 'pending',
-                        'payment_status'     => 'UNKNOWN',
-                    ]);
                     return;
                 }
 
@@ -136,7 +129,7 @@ class UserOrderController extends Controller implements HasMiddleware
                     'status'             => $payment_status === 'SUCCESS' ? 'paid' : 'pending',
                     'payment_status'     => $payment_status,
                 ]);
-                
+
             } else {
                 // Start KESS Payment
                 $merchant = new Merchants();
