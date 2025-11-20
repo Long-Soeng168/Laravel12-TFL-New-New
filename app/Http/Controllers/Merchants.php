@@ -103,7 +103,7 @@ class Merchants
 
         try {
             $resp = $this->callHttp($url, $params);
-
+            dd($resp);
             setcookie('access_token', $resp['access_token'], $resp['expires_in'] - 100);
             return $resp['access_token'];
         } catch (\Throwable $th) {

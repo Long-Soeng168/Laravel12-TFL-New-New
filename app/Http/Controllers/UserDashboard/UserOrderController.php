@@ -74,26 +74,7 @@ class UserOrderController extends Controller implements HasMiddleware
             'tableData' => $tableData,
         ]);
     }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create(Request $request)
-    {
-        dd('Create Function');
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        dd('Store Function');
-    }
-
-    /**
-     * Display the specified resource.
-     */
+ 
     public function show(Order $user_order)
     {
         if ($user_order->user_id != Auth::user()->id) {
@@ -163,33 +144,7 @@ class UserOrderController extends Controller implements HasMiddleware
             'paymentLink' => $paymentLink,
         ]);
     }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-
-    public function edit(Item $user_order)
-    {
-        if ($user_order->user_id != Auth::user()->id) {
-            abort(404);
-        }
-        $editData = $user_order->load('order_items.item.images');
-        dd($editData);
-        return Inertia::render('user-dashboard/orders/Create', [
-            'editData' => $editData,
-        ]);
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Order $user_order)
-    {
-        if ($user_order->user_id != Auth::user()->id) {
-            abort(404);
-        }
-        dd($request->all());
-    }
+ 
 
     public function update_status(Request $request, Item $user_item)
     {
