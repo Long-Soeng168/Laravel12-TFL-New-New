@@ -161,6 +161,10 @@ class KESSPaywayCheckout extends Controller
     {
         $order = Order::where('tran_id', $request->tran_id)->first();
 
+        $order->update([
+            'transaction_detail' => $request->all(),
+            'notes' => 'requested',
+        ]);
 
         if ($order->status == 'pending' && $order->payment_status != 'SUCCESS') {
             $merchant = new Merchants();
