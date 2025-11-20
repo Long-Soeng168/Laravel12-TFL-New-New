@@ -180,6 +180,7 @@ class KESSPaywayCheckout extends Controller
             $payment_status = $result['data']['status'];
             $order->update([
                 'transaction_detail' => $result['data'],
+                'transaction_id' => $result['data']['transaction_id'],
                 'status' => $payment_status == 'SUCCESS' ? 'paid' : 'pending',
                 'payment_status' => $payment_status,
             ]);
