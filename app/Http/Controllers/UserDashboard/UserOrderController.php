@@ -74,7 +74,7 @@ class UserOrderController extends Controller implements HasMiddleware
             'tableData' => $tableData,
         ]);
     }
- 
+
     public function show(Order $user_order)
     {
         if ($user_order->user_id != Auth::user()->id) {
@@ -112,14 +112,31 @@ class UserOrderController extends Controller implements HasMiddleware
 
             if ($user_order->payment_status != 'SUCCESS') {
                 $merchant = new Merchants();
-                $result = $merchant->queryOrder($user_order->tran_id);
-                $payment_status = $result['data']['status'];
+                $result   = $merchant->queryOrder($user_order->tran_id);
+
+                // make sure $result is valid
+                $data = $result['data'] ?? null;
+
+                if (!$data) {
+                    // handle no data from API
+                    $user_order->update([
+                        'transaction_detail' => null,
+                        'transaction_id'     => null,
+                        'status'             => 'pending',
+                        'payment_status'     => 'UNKNOWN',
+                    ]);
+                    return;
+                }
+
+                $payment_status = $data['status'] ?? 'UNKNOWN';
+
                 $user_order->update([
-                    'transaction_detail' => $result['data'],
-                    'transaction_id' => $result['data']['transaction_id'],
-                    'status' => $payment_status == 'SUCCESS' ? 'paid' : 'pending',
-                    'payment_status' => $payment_status,
+                    'transaction_detail' => $data,
+                    'transaction_id'     => $data['transaction_id'] ?? null,
+                    'status'             => $payment_status === 'SUCCESS' ? 'paid' : 'pending',
+                    'payment_status'     => $payment_status,
                 ]);
+                
             } else {
                 // Start KESS Payment
                 $merchant = new Merchants();
@@ -144,7 +161,7 @@ class UserOrderController extends Controller implements HasMiddleware
             'paymentLink' => $paymentLink,
         ]);
     }
- 
+
 
     public function update_status(Request $request, Item $user_item)
     {
