@@ -112,24 +112,16 @@ class UserOrderController extends Controller implements HasMiddleware
 
             if ($user_order->payment_status != 'SUCCESS') {
                 $merchant = new Merchants();
-                $result   = $merchant->queryOrder($user_order->tran_id);
-
-                // make sure $result is valid
-                $data = $result['data'] ?? null;
-
-                if (!$data) {
-                    return;
+                $result = $merchant->queryOrder($user_order->tran_id);
+                if ($result) {
+                    $payment_status = $result['data']['status'];
+                    $user_order->update([
+                        'transaction_detail' => $result['data'],
+                        'transaction_id' => $result['data']['transaction_id'],
+                        'status' => $payment_status == 'SUCCESS' ? 'paid' : 'pending',
+                        'payment_status' => $payment_status,
+                    ]);
                 }
-
-                $payment_status = $data['status'] ?? 'UNKNOWN';
-
-                $user_order->update([
-                    'transaction_detail' => $data,
-                    'transaction_id'     => $data['transaction_id'] ?? null,
-                    'status'             => $payment_status === 'SUCCESS' ? 'paid' : 'pending',
-                    'payment_status'     => $payment_status,
-                ]);
-
             } else {
                 // Start KESS Payment
                 $merchant = new Merchants();
