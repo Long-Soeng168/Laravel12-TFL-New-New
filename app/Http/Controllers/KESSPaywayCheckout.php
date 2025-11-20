@@ -159,11 +159,11 @@ class KESSPaywayCheckout extends Controller
     }
     public function callback(Request $request)
     {
-        $order = Order::where('tran_id', $request->tran_id)->first();
+        $order = Order::where('id', $request->order_id)->first();
 
         if ($order) {
             $order->update([
-                'transaction_detail' => $request->tran_id,
+                'transaction_detail' => $request->order_id,
                 // 'notes' => 'requested',
             ]);
         } else {
@@ -176,9 +176,10 @@ class KESSPaywayCheckout extends Controller
 
         if ($order->status == 'pending' && $order->payment_status != 'SUCCESS') {
             $merchant = new Merchants();
-            $result = $merchant->queryOrder($request->out_trade_no);
+            $result = $merchant->queryOrder($order->tran_id);
             $payment_status = $result['data']['status'];
             $order->update([
+                'transaction_detail' => $result['data'],
                 'status' => $payment_status == 'SUCCESS' ? 'paid' : 'pending',
                 'payment_status' => $payment_status,
             ]);

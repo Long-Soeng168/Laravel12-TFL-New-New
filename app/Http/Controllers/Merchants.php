@@ -23,9 +23,9 @@ class Merchants
         return $configs;
     }
 
-    public function createOrder($tran_id, $total_amount, $currency, $continue_success_url)
+    public function createOrder($tran_id, $total_amount, $currency, $continue_success_url, $order_id)
     {
-        $callback_url = env('APP_URL') . "/kess/callback?tran_id=" . $tran_id;
+        $callback_url = env('APP_URL') . "/kess/callback?order_id=" . $order_id;
 
         $params = [
             "service" => "webpay.acquire.createOrder",
@@ -71,10 +71,11 @@ class Merchants
 
         try {
             $resp = $this->callHttp($url, $params);
+            // dd($resp);
             $this->verifySignatureForResponse($resp["sign"], $resp["sign_type"], $resp["data"], $this->get_configs()['api_secret_key']);
             return $resp;
         } catch (\Throwable $th) {
-            print_r($th);
+            throw ($th);
         }
     }
 
