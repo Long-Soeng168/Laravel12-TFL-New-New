@@ -166,7 +166,7 @@ const Show = () => {
                     <div className="space-y-2 rounded-2xl border p-4">
                         <div className="flex">
                             <span className="rounded-md border">
-                                <TransactionDetailDialog tranId={order_detail?.tran_id} detail={order_detail?.transaction_detail || '---'} />
+                                <TransactionDetailDialog order_id={order_detail?.id} detail={order_detail?.transaction_detail || '---'} />
                             </span>
                         </div>
                         <div className="flex items-center gap-2">Transaction ID : {order_detail?.tran_id}</div>
