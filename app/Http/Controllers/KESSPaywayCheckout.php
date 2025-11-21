@@ -112,24 +112,26 @@ class KESSPaywayCheckout extends Controller
                 $decoded = json_decode($result, true);
                 $result = $decoded ?? ['raw' => $result];
             }
-            $data = $result['data'] ?? [];
+            $data = $result['data'] ?? null;
 
-            $order->update([
-                'notes'              => 'Recheck Transaction Requested',
+            if ($data) {
+                $order->update([
+                    'notes'              => 'Recheck Transaction Requested',
 
-                // status might not exist in this structure at all
-                'status'             => ($data['status'] ?? null) === 'SUCCESS' ? 'paid' : 'pending',
-                'payment_status'     => $data['status'] ?? 'UNKNOWN',
+                    // status might not exist in this structure at all
+                    'status'             => ($data['status'] ?? null) === 'SUCCESS' ? 'paid' : 'pending',
+                    'payment_status'     => $data['status'] ?? 'UNKNOWN',
 
-                'tran_id'            => $data['out_trade_no']   ?? $order->tran_id,
-                'transaction_id'     => $data['transaction_id'] ?? $order->transaction_id,
+                    'tran_id'            => $data['out_trade_no']   ?? $order->tran_id,
+                    'transaction_id'     => $data['transaction_id'] ?? $order->transaction_id,
 
-                // this structure does NOT contain payment_detail anymore
-                'payment_method_bic' => $data['payment_detail']['payment_method_bic'] ?? null,
+                    // this structure does NOT contain payment_detail anymore
+                    'payment_method_bic' => $data['payment_detail']['payment_method_bic'] ?? null,
 
-                // store only the `data` section
-                'transaction_detail' => $data,
-            ]);
+                    // store only the `data` section
+                    'transaction_detail' => $data,
+                ]);
+            }
 
             if ($order->notify_telegram_status != 'completed' && $data['status'] == 'SUCCESS') {
 
