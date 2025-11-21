@@ -8,6 +8,7 @@ import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import useRole from '@/hooks/use-role';
 import useTranslation from '@/hooks/use-translation';
+import { UserHoverCard } from '@/pages/admin/orders/components/UserHoverCard';
 import StatusBadge from '@/pages/nokor-tech/components/StatusBadge';
 import { Link, router, usePage } from '@inertiajs/react';
 import { ArrowUpDown, ScanEyeIcon } from 'lucide-react';
@@ -63,17 +64,17 @@ const MyTableData = () => {
                                     <ArrowUpDown size={16} /> {t('Order Status')}
                                 </span>
                             </TableHead>
-                            {/* <TableHead onClick={() => handleSort('order_number')}>
-                                <span className="flex cursor-pointer items-center">
-                                    <ArrowUpDown size={16} /> {t('Order Number')}
-                                </span>
-                            </TableHead> */}
-
                             <TableHead onClick={() => handleSort('total_amount')}>
                                 <span className="flex cursor-pointer items-center">
                                     <ArrowUpDown size={16} /> {t('Total Amount')}
                                 </span>
                             </TableHead>
+
+                            {/* <TableHead onClick={() => handleSort('user_id')}>
+                                <span className="flex cursor-pointer items-center">
+                                    <ArrowUpDown size={16} /> {t('Buyer')}
+                                </span>
+                            </TableHead> */}
 
                             <TableHead onClick={() => handleSort('shop_id')}>
                                 <span className="flex cursor-pointer items-center">
@@ -106,12 +107,11 @@ const MyTableData = () => {
                                     <ArrowUpDown size={16} /> {t('Notify Telegram')}
                                 </span>
                             </TableHead>
-
-                            {/* <TableHead onClick={() => handleSort('updated_at')}>
+                            <TableHead onClick={() => handleSort('created_at')}>
                                 <span className="flex cursor-pointer items-center">
-                                    <ArrowUpDown size={16} /> {t('Updated at')}
+                                    <ArrowUpDown size={16} /> {t('Created at')}
                                 </span>
-                            </TableHead> */}
+                            </TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -139,6 +139,10 @@ const MyTableData = () => {
                                     {item.currency == 'KHR' ? '៛ ' : '$ '} {item.total_amount}
                                 </TableCell>
 
+                                {/* <TableCell className="font-medium whitespace-nowrap capitalize">
+                                    <UserHoverCard user={item?.buyer} />
+                                </TableCell> */}
+
                                 <TableCell className="font-medium whitespace-nowrap capitalize">
                                     {item?.shop ? <ShopHoverCard shop={item?.shop} /> : ''}
                                 </TableCell>
@@ -157,6 +161,18 @@ const MyTableData = () => {
                                     <Badge variant={item.notify_telegram_status == 'completed' ? 'default' : 'secondary'}>
                                         {item.notify_telegram_status || 'NA'}
                                     </Badge>
+                                </TableCell>
+                                <TableCell className="whitespace-nowrap">
+                                    {item.updated_at
+                                        ? new Date(item.created_at).toLocaleDateString('en-UK', {
+                                              year: 'numeric',
+                                              month: 'long',
+                                              day: 'numeric',
+                                              hour: 'numeric',
+                                              minute: 'numeric',
+                                              hour12: true,
+                                          })
+                                        : '---'}
                                 </TableCell>
                             </TableRow>
                         ))}

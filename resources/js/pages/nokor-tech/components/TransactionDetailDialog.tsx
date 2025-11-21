@@ -15,7 +15,7 @@ import { Loader2, ReceiptTextIcon } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
-export function TransactionDetailDialog({ detail, tranId }: { detail: string; tranId: string }) {
+export function TransactionDetailDialog({ detail, order_id }: { detail: string; order_id: string }) {
     const [loading, setLoading] = useState(false);
     const [transaction, setTransaction] = useState(detail);
 
@@ -23,7 +23,7 @@ export function TransactionDetailDialog({ detail, tranId }: { detail: string; tr
         setLoading(true);
 
         try {
-            const response = await fetch(`/aba/callback?tran_id=${tranId}`, {
+            const response = await fetch(`/kess/get-order-transaction?order_id=${order_id}`, {
                 method: 'GET', // or POST if your callback expects POST
                 headers: {
                     Accept: 'application/json',

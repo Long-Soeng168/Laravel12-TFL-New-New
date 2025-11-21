@@ -30,5 +30,4 @@ Route::middleware('auth')->group(function () {
 Route::get('/shopping-cart', [KESSPaywayCheckout::class, 'shopping_cart'])->middleware('auth');
 Route::get('/kess/success', [KESSPaywayCheckout::class, 'success']);
 
-Route::get('/kess/callback', [KESSPaywayCheckout::class, 'callback']);
-// Route::get('/kess/cancel', [KESSPaywayCheckout::class, 'cancel']);
+Route::get('/kess/get-order-transaction', [KESSPaywayCheckout::class, 'get_order_transaction']);

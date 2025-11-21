@@ -15,7 +15,6 @@ import { usePage } from '@inertiajs/react';
 import { CheckCircle2, Clock, CreditCard, Loader2, ShoppingCart, Truck } from 'lucide-react';
 import { ShopHoverCard } from './components/ShopHoverCard';
 import UpdateOrderStatus from './components/UpdateOrderStatus';
-import UpdatePayoutStatus from './components/UpdatePayoutStatus';
 import { UserHoverCard } from './components/UserHoverCard';
 
 const Show = () => {
@@ -128,8 +127,11 @@ const Show = () => {
                 <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                     <div className="space-y-2 rounded-2xl border p-4">
                         <div className="flex items-center gap-2">
-                            {t('Order Number')} : <span className="font-bold">{order_detail?.order_number.split('-').slice(1).join('-')}</span>
+                            {t('Order ID')} : <span className="font-bold">{order_detail?.id}</span>
                         </div>
+                        {/* <div className="flex items-center gap-2">
+                            {t('Order Number')} : <span>{order_detail?.order_number.split('-').slice(1).join('-')}</span>
+                        </div> */}
                         <div className="flex items-center gap-2">
                             {t('Order Date')} :{' '}
                             <span className="text-base">
@@ -162,12 +164,6 @@ const Show = () => {
                                 {t('Buyer')} : <UserHoverCard user={order_detail?.buyer} />
                             </div>
                         )}
-                        <div className="flex items-center gap-2">
-                            {t('Buyer Note')} : <span className="text-base">{order_detail?.notes || '---'}</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                            {t('Shipping Address')} : <span className="text-base">{order_detail?.shipping_address || '---'}</span>
-                        </div>
                     </div>
                     <div className="space-y-2 rounded-2xl border p-4">
                         <div className="flex">
@@ -176,11 +172,15 @@ const Show = () => {
                             </span>
                         </div>
                         <div className="flex items-center gap-2">
-                            {t('Transaction ID')} : {order_detail?.tran_id}
+                            {t('Pyament Gateway')} : <PaymentMethodLabel value={order_detail?.payment_method || '---'} />
                         </div>
                         <div className="flex items-center gap-2">
-                            {t('Pyament Method')} : <PaymentMethodLabel value={order_detail?.payment_method} />
+                            {t('Pyament Method')} : <PaymentMethodLabel value={order_detail?.payment_method_bic || '---'} />
                         </div>
+                        <div className="flex items-center gap-2">
+                            {t('Transaction ID')} : {order_detail?.transaction_id || '---'}
+                        </div>
+
                         <div className="flex items-center gap-2">
                             {t('Pyament Status')} : <StatusBadge status={order_detail?.payment_status} />
                         </div>
@@ -189,9 +189,6 @@ const Show = () => {
                         </div>
                         <div className="flex items-center gap-2">
                             {t('Total Amount')} : <span className="text-xl font-bold">$ {order_detail?.total_amount}</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                            {t('Payout Status')} : <UpdatePayoutStatus />
                         </div>
                     </div>
                 </div>

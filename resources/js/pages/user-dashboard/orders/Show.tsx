@@ -133,9 +133,9 @@ const Show = () => {
                         <div className="flex items-center gap-2">
                             {t('Order ID')} : <span className="font-bold">{order_detail?.id}</span>
                         </div>
-                        <div className="flex items-center gap-2">
+                        {/* <div className="flex items-center gap-2">
                             {t('Order Number')} : <span>{order_detail?.order_number.split('-').slice(1).join('-')}</span>
-                        </div>
+                        </div> */}
                         <div className="flex items-center gap-2">
                             {t('Order Date')} :{' '}
                             <span className="text-base">
@@ -157,14 +157,16 @@ const Show = () => {
                                 <StatusBadge status={order_detail?.status} />
                             </span>
                         </div>
-                        {order_detail?.shop && (
-                            <div className="flex items-center gap-2">
-                                {t('Shop')} : <ShopHoverCard shop={order_detail?.shop} />
-                            </div>
-                        )}
+
                         {order_detail?.buyer && (
                             <div className="flex items-center gap-2">
                                 {t('Buyer')} : <UserHoverCard user={order_detail?.buyer} />
+                            </div>
+                        )}
+
+                        {order_detail?.shop && (
+                            <div className="flex items-center gap-2">
+                                {t('Shop')} : <ShopHoverCard shop={order_detail?.shop} />
                             </div>
                         )}
                         {/* <div className="flex items-center gap-2">

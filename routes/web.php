@@ -100,7 +100,7 @@ Route::get('/test-payment', function () {
    $continue_success_url = env('APP_URL') . "/kess/success";
 
    // You can test either createOrder() or queryOrder()
-   $result = $merchant->createOrder($tran_id, 1, $currency, $continue_success_url);
+   $result = $merchant->createOrder($tran_id, 1, $currency, $continue_success_url, '...');
 
    // Decode JSON if it's a string
    if (is_string($result)) {

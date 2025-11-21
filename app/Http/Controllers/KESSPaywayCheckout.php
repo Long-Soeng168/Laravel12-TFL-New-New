@@ -97,4 +97,52 @@ class KESSPaywayCheckout extends Controller
             'request' => $request->all(),
         ]);
     }
+    public function get_order_transaction(Request $request)
+    {
+        $order = Order::findOrFail($request->order_id);
+
+        if ($order->status == 'pending' && $order->payment_status != 'SUCCESS') {
+            $merchant = new Merchants();
+
+            // You can test either createOrder() or queryOrder()
+            $result = $merchant->queryOrder($order->tran_id);
+
+            // Decode JSON if it's a string
+            if (is_string($result)) {
+                $decoded = json_decode($result, true);
+                $result = $decoded ?? ['raw' => $result];
+            }
+            $order->update([
+                'notes'                 => 'Recheck Transaction Requested',
+                'status'                => $request->input('status') == 'SUCCESS' ? 'paid' : 'pending',
+                'payment_status'        => $request->input('status', 'UNKNOWN'),
+                'tran_id'               => $request->input('out_trade_no', $order->tran_id),
+                'transaction_id'        => $request->input('transaction_id', $order->transaction_id),
+                'payment_method_bic'    => $request->input('payment_detail.payment_method_bic', null),
+
+                'transaction_detail'    => $result, // <-- careful here
+            ]);
+        }
+
+        if ($order->notify_telegram_status != 'completed') {
+
+            $telegram_notify_result = TelegramHelper::sendOrderNotification($order);
+
+            if ($telegram_notify_result['success'] === true) {
+                $order->update([
+                    'notify_telegram_status' => 'completed'
+                ]);
+            } else {
+                $order->update([
+                    'notify_telegram_status' => 'failed'
+                ]);
+                Log::warning('Telegram notify failed for order ' . $order->id . ': ' . $telegram_notify_result['message']);
+            }
+        }
+
+        return response()->json([
+            'message' => 'Success',
+            'request' => $result,
+        ]);
+    }
 }
