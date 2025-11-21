@@ -23,18 +23,21 @@ class KESSPaywayCheckout extends Controller
         $this->payWayService = $payWayService;
     }
 
-    public function get_hash(Request $request)
+    public function shopping_cart()
     {
-        $request->validate([
-            'hash_string' => 'required|string',
-        ]);
+        $req_time = date('YmdHis'); // UTC time format
+        $merchant_id = config('payway.merchant_id');
+        $tran_id = uniqid();
 
-        $hash = $this->payWayService->getHash($request->hash_string);
-
-        return response()->json([
-            'code' => '00',
-            'message' => 'Success!',
-            'hash' => $hash,
+        return Inertia::render("nokor-tech/cart/ShoppingCart", [
+            'req_time' => $req_time,
+            'shipping' => env('SHIPPING_PRICE_USD') ?? 0,
+            'currency' => "USD",
+            'paymentOption' => "kess_webpay",
+            'merchant_id' => $merchant_id,
+            'tran_id' => $tran_id,
+            'app_url' => config('app.url'),
+            'api_url' => config('payway.api_url'), // Assuming this is defined elsewhere
         ]);
     }
 
