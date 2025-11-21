@@ -101,60 +101,68 @@ class KESSPaywayCheckout extends Controller
     {
         $order = Order::findOrFail($request->order_id);
 
-        if ($order->status == 'pending' && $order->payment_status != 'SUCCESS') {
-            $merchant = new Merchants();
+        $result = null;
 
-            // You can test either createOrder() or queryOrder()
+        if ($order->status == 'pending' && $order->payment_status != 'SUCCESS') {
+
+            $merchant = new Merchants();
             $result = $merchant->queryOrder($order->tran_id);
 
-            // Decode JSON if it's a string
+            // Decode JSON string if needed
             if (is_string($result)) {
-                $decoded = json_decode($result, true);
-                $result = $decoded ?? ['raw' => $result];
+                $result = json_decode($result, true) ?? ['raw' => $result];
             }
+
+            // Convert object to array if needed
             if (is_object($result)) {
                 $result = json_decode(json_encode($result), true);
             }
+
+            // Safely get data
             $data = $result['data'] ?? [];
 
-
-            if ($data) {
+            // Update order if data exists
+            if (!empty($data)) {
                 $order->update([
                     'notes'              => 'Recheck Transaction Requested',
 
-                    // status might not exist in this structure at all
-                    'status'             => ($data['status'] ?? null) === 'SUCCESS' ? 'paid' : 'pending',
+                    'status'             => ($data['status'] ?? null) === 'SUCCESS'
+                        ? 'paid'
+                        : 'pending',
+
                     'payment_status'     => $data['status'] ?? 'UNKNOWN',
 
                     'tran_id'            => $data['out_trade_no']   ?? $order->tran_id,
                     'transaction_id'     => $data['transaction_id'] ?? $order->transaction_id,
 
-                    // this structure does NOT contain payment_detail anymore
                     'payment_method_bic' => $data['payment_detail']['payment_method_bic'] ?? null,
 
-                    // store only the `data` section
                     'transaction_detail' => $data,
                 ]);
             }
 
-            if ($order->notify_telegram_status != 'completed' && ($data['status'] ?? null) === 'SUCCESS') {
+            // Telegram notification if payment succeeded
+            if (
+                $order->notify_telegram_status != 'completed'
+                && ($data['status'] ?? null) === 'SUCCESS'
+            ) {
 
                 $telegram_notify_result = TelegramHelper::sendOrderNotification($order);
 
-                if ($telegram_notify_result['success'] === true) {
-                    $order->update([
-                        'notify_telegram_status' => 'completed'
-                    ]);
-                } else {
-                    $order->update([
-                        'notify_telegram_status' => 'failed'
-                    ]);
-                    Log::warning('Telegram notify failed for order ' . $order->id . ': ' . $telegram_notify_result['message']);
+                $order->update([
+                    'notify_telegram_status' => $telegram_notify_result['success'] === true
+                        ? 'completed'
+                        : 'failed',
+                ]);
+
+                if ($telegram_notify_result['success'] !== true) {
+                    Log::warning(
+                        'Telegram notify failed for order ' . $order->id . ': ' .
+                            ($telegram_notify_result['message'] ?? 'Unknown error')
+                    );
                 }
             }
         }
-
-
 
         return response()->json([
             'message' => 'Success',
