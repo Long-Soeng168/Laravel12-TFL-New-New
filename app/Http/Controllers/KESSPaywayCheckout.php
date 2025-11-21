@@ -111,7 +111,7 @@ class KESSPaywayCheckout extends Controller
     }
     public function success(Request $request)
     {
-        $order = Order::where('tran_id', $request->out_trade_no)->first();
+        $order = Order::findOrFail($request->order_id);
         return redirect("/user-orders/{$order->id}?order_success=1&order_id=" . $order->id);
 
         // $merchant = new Merchants();
