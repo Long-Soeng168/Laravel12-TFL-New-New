@@ -103,6 +103,10 @@ class KESSPaywayCheckout extends Controller
 
         $result = null;
 
+        if ($order->payment_status == 'SUCCESS') {
+            $result = 'Completed payment cannot be check';
+        }
+
         if ($order->status == 'pending' && $order->payment_status != 'SUCCESS') {
 
             $merchant = new Merchants();
