@@ -112,7 +112,7 @@ class KESSPaywayCheckout extends Controller
                 $decoded = json_decode($result, true);
                 $result = $decoded ?? ['raw' => $result];
             }
-            $data = $result['data'] ?? null;
+            $data = $result ? $result['data'] : null;
 
             if ($data) {
                 $order->update([
