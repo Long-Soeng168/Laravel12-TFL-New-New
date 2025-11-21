@@ -19,6 +19,7 @@ use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\ShopController;
 use App\Http\Controllers\Api\SlideController;
 use App\Http\Controllers\Api\VideoController;
+use App\Http\Controllers\KESSPaywayCheckout;
 use Illuminate\Support\Facades\Route;
 
 Route::post('/api/orders/{id}/payout', [ABAPayoutController::class, 'payout']);
@@ -106,3 +107,6 @@ Route::post('/bakong/check', function (\Illuminate\Http\Request $request) {
 
     return response()->json($response->json(), $response->status());
 });
+
+
+Route::post('/kess/callback', [KESSPaywayCheckout::class, 'callback']);

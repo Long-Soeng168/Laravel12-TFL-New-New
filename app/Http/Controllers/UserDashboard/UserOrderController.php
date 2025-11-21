@@ -100,7 +100,7 @@ class UserOrderController extends Controller implements HasMiddleware
             abort(403, 'Unauthorized resource');
         }
 
-        if ($user_order->status == 'pending') {
+        if ($user_order->status == 'pending' && $user_order->transaction_id == null) {
             $tran_id = uniqid();
             $user_order->update(
                 [
@@ -112,9 +112,7 @@ class UserOrderController extends Controller implements HasMiddleware
         }
 
         $currency = $user_order->currency;
-        $continue_success_url = env('APP_URL') . "/kess/success"; 
-
-
+        $continue_success_url = env('APP_URL') . "/kess/success";
 
         // $amount = $user_order->total_amount - $user_order->shipping_price;
         // $shipping = $user_order->shipping_price;
@@ -133,7 +131,7 @@ class UserOrderController extends Controller implements HasMiddleware
             $merchant = new Merchants();
 
             // You can test either createOrder() or queryOrder()
-            $result = $merchant->createOrder($tran_id, $user_order->total_amount, $currency, $continue_success_url);
+            $result = $merchant->createOrder($tran_id, $user_order->total_amount, $currency, $continue_success_url, $user_order->id);
 
             // Decode JSON if it's a string
             if (is_string($result)) {

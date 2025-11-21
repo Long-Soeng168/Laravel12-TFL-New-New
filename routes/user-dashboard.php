@@ -31,5 +31,4 @@ Route::get('/shopping-cart', [KESSPaywayCheckout::class, 'shopping_cart'])->midd
 Route::get('/kess/success', [KESSPaywayCheckout::class, 'success']);
 
 Route::get('/kess/callback', [KESSPaywayCheckout::class, 'callback']);
-Route::post('/kess/callback', [KESSPaywayCheckout::class, 'callback']);
 // Route::get('/kess/cancel', [KESSPaywayCheckout::class, 'cancel']);

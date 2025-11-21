@@ -111,47 +111,50 @@ class KESSPaywayCheckout extends Controller
     }
     public function success(Request $request)
     {
-        $merchant = new Merchants();
-
-        $result = $merchant->queryOrder($request->out_trade_no);
-
-        $payment_status = $result['data']['status'];
-
         $order = Order::where('tran_id', $request->out_trade_no)->first();
-        $order->update([
-            'status' => $payment_status == 'SUCCESS' ? 'paid' : 'pending',
-            'payment_status' => $payment_status,
-            'transaction_detail' => $result['data'],
-            'transaction_id' => $result['data']['transaction_id'],
-        ]);
+        return redirect("/user-orders/{$order->id}?order_success=1&order_id=" . $order->id);
 
-        // dd($order->notify_telegram_status);
-        if ($order->notify_telegram_status != 'completed') {
+        // $merchant = new Merchants();
 
-            $result = TelegramHelper::sendOrderNotification($order);
+        // $result = $merchant->queryOrder($request->out_trade_no);
 
-            if ($result['success'] === true) {
-                // Telegram sent — mark completed
-                $order->update([
-                    'notify_telegram_status' => 'completed'
-                ]);
-            } else {
-                // Telegram failed — mark failed
-                $order->update([
-                    'notify_telegram_status' => 'failed'
-                ]);
+        // $payment_status = $result['data']['status'];
 
-                // optional: log it
-                Log::warning('Telegram notify failed for order ' . $order->id . ': ' . $result['message']);
-            }
-        }
+        // $order = Order::where('tran_id', $request->out_trade_no)->first();
+        // $order->update([
+        //     'status' => $payment_status == 'SUCCESS' ? 'paid' : 'pending',
+        //     'payment_status' => $payment_status,
+        //     'transaction_detail' => $result['data'],
+        //     'transaction_id' => $result['data']['transaction_id'],
+        // ]);
+
+        // // dd($order->notify_telegram_status);
+        // if ($order->notify_telegram_status != 'completed') {
+
+        //     $result = TelegramHelper::sendOrderNotification($order);
+
+        //     if ($result['success'] === true) {
+        //         // Telegram sent — mark completed
+        //         $order->update([
+        //             'notify_telegram_status' => 'completed'
+        //         ]);
+        //     } else {
+        //         // Telegram failed — mark failed
+        //         $order->update([
+        //             'notify_telegram_status' => 'failed'
+        //         ]);
+
+        //         // optional: log it
+        //         Log::warning('Telegram notify failed for order ' . $order->id . ': ' . $result['message']);
+        //     }
+        // }
 
 
-        if ($order) {
-            return redirect("/user-orders/{$order->id}?order_success=1&order_id=" . $order->id);
-        } else {
-            return redirect('/shopping-cart?order_fail=1');
-        }
+        // if ($order) {
+        //     return redirect("/user-orders/{$order->id}?order_success=1&order_id=" . $order->id);
+        // } else {
+        //     return redirect('/shopping-cart?order_fail=1');
+        // }
 
         // return response()->json([
         //     'message' => 'Success',
@@ -160,39 +163,43 @@ class KESSPaywayCheckout extends Controller
     }
     public function callback(Request $request)
     {
-        $order = Order::where('tran_id', $request->out_trade_no)->first();
+        $order = Order::findOrFail($request->order_id);
 
+        $order->update([
+            'notes' => 'Requested',
+            'transaction_detail' => $request->all()
+        ]);
 
-        if ($order->status == 'pending' && $order->payment_status != 'SUCCESS') {
-            $merchant = new Merchants();
-            $result = $merchant->queryOrder($request->out_trade_no);
-            $payment_status = $result['data']['status'];
-            $order->update([
-                'status' => $payment_status == 'SUCCESS' ? 'paid' : 'pending',
-                'payment_status' => $payment_status,
-            ]);
-        }
+        // if ($order->status == 'pending' && $order->payment_status != 'SUCCESS') {
+        //     $merchant = new Merchants();
+        //     $result = $merchant->queryOrder($request->out_trade_no);
+        //     $payment_status = $result['data']['status'];
+        //     $order->update([
+        //         'status' => $payment_status == 'SUCCESS' ? 'paid' : 'pending',
+        //         'payment_status' => $payment_status,
+        //     ]);
+        // }
 
-        // dd($order->notify_telegram_status);
-        if ($order->notify_telegram_status != 'completed') {
+        // // dd($order->notify_telegram_status);
+        // if ($order->notify_telegram_status != 'completed') {
 
-            $result = TelegramHelper::sendOrderNotification($order);
+        //     $result = TelegramHelper::sendOrderNotification($order);
 
-            if ($result['success'] === true) {
-                // Telegram sent — mark completed
-                $order->update([
-                    'notify_telegram_status' => 'completed'
-                ]);
-            } else {
-                // Telegram failed — mark failed
-                $order->update([
-                    'notify_telegram_status' => 'failed'
-                ]);
+        //     if ($result['success'] === true) {
+        //         // Telegram sent — mark completed
+        //         $order->update([
+        //             'notify_telegram_status' => 'completed'
+        //         ]);
+        //     } else {
+        //         // Telegram failed — mark failed
+        //         $order->update([
+        //             'notify_telegram_status' => 'failed'
+        //         ]);
 
-                // optional: log it
-                Log::warning('Telegram notify failed for order ' . $order->id . ': ' . $result['message']);
-            }
-        }
+        //         // optional: log it
+        //         Log::warning('Telegram notify failed for order ' . $order->id . ': ' . $result['message']);
+        //     }
+        // }
 
 
         // if ($order) {
