@@ -11,13 +11,11 @@ import PaymentMethodLabel from '@/components/PaymentMethodLabel';
 import { ShopHoverCard } from '@/pages/admin/orders/components/ShopHoverCard';
 import { UserHoverCard } from '@/pages/admin/orders/components/UserHoverCard';
 import StatusBadge from '@/pages/nokor-tech/components/StatusBadge';
-import { TransactionDetailDialog } from '@/pages/nokor-tech/components/TransactionDetailDialog';
 import OrderItemCard from '@/pages/user-dashboard/orders/components/OrderItemCard';
 import { usePage } from '@inertiajs/react';
 import { CheckCircle2, Clock, CreditCard, Loader2, ShoppingCart, Truck } from 'lucide-react';
-import { OrderSuccessDialog } from './components/OrderSuccessDialog';
-import PaymentMethods from './components/PaymentMethods';
 import KESSPaymentMethods from './components/KESSPaymentMethods';
+import { OrderSuccessDialog } from './components/OrderSuccessDialog';
 
 const Show = () => {
     const { order_detail, paymentLink } = usePage<any>().props;
@@ -126,17 +124,20 @@ const Show = () => {
                     <div>
                         <KESSPaymentMethods />
                     </div>
-                )} 
+                )}
                 <OrderSuccessDialog />
 
-                <p className="text-muted-foreground mb-4 text-lg font-bold">{t("Order Detail")}</p>
+                <p className="text-muted-foreground mb-4 text-lg font-bold">{t('Order Detail')}</p>
                 <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                     <div className="space-y-2 rounded-2xl border p-4">
                         <div className="flex items-center gap-2">
-                            {t("Order Number")} : <span className="font-bold">{order_detail?.order_number.split('-').slice(1).join('-')}</span>
+                            {t('Order ID')} : <span className="font-bold">{order_detail?.id}</span>
                         </div>
                         <div className="flex items-center gap-2">
-                            {t("Order Date")} :{' '}
+                            {t('Order Number')} : <span>{order_detail?.order_number.split('-').slice(1).join('-')}</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                            {t('Order Date')} :{' '}
                             <span className="text-base">
                                 {order_detail?.created_at
                                     ? new Date(order_detail?.created_at).toLocaleString('en-UK', {
@@ -151,52 +152,53 @@ const Show = () => {
                             </span>
                         </div>
                         <div className="flex items-center gap-2">
-                            {t("Order Status")} :
+                            {t('Order Status')} :
                             <span className="capitalize">
                                 <StatusBadge status={order_detail?.status} />
                             </span>
                         </div>
                         {order_detail?.shop && (
                             <div className="flex items-center gap-2">
-                                {t("Shop")} : <ShopHoverCard shop={order_detail?.shop} />
+                                {t('Shop')} : <ShopHoverCard shop={order_detail?.shop} />
                             </div>
                         )}
                         {order_detail?.buyer && (
                             <div className="flex items-center gap-2">
-                                {t("Buyer")} : <UserHoverCard user={order_detail?.buyer} />
+                                {t('Buyer')} : <UserHoverCard user={order_detail?.buyer} />
                             </div>
                         )}
-                        <div className="flex items-center gap-2">
-                            {t("Buyer Note")} : <span className="text-base">{order_detail?.notes || '---'}</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                            {t("Shipping Address")} : <span className="text-base">{order_detail?.shipping_address || '---'}</span>
-                        </div>
+                        {/* <div className="flex items-center gap-2">
+                            {t('Buyer Note')} : <span className="text-base">{order_detail?.notes || '---'}</span>
+                        </div> */}
+                        {/* <div className="flex items-center gap-2">
+                            {t('Shipping Address')} : <span className="text-base">{order_detail?.shipping_address || '---'}</span>
+                        </div> */}
                     </div>
                     <div className="space-y-2 rounded-2xl border p-4">
-                        {/* <div className="flex">
-                            <span className="rounded-md border">
-                                <TransactionDetailDialog tranId={order_detail?.tran_id} detail={order_detail?.transaction_detail || '---'} />
-                            </span>
-                        </div> */}
-                        <div className="flex items-center gap-2">{t("Transaction ID")} : {order_detail?.tran_id}</div>
                         <div className="flex items-center gap-2">
-                            {t("Pyament Method")} : <PaymentMethodLabel value={order_detail?.payment_method} />
+                            {t('Pyament Gateway')} : <PaymentMethodLabel value={order_detail?.payment_method || '---'} />
                         </div>
                         <div className="flex items-center gap-2">
-                            {t("Pyament Status")} : <StatusBadge status={order_detail?.payment_status} />
+                            {t('Pyament Method')} : <PaymentMethodLabel value={order_detail?.payment_method_bic || '---'} />
                         </div>
                         <div className="flex items-center gap-2">
-                            {t("Shipping Price")} : <span className="text-xl">$ {order_detail?.shipping_price}</span>
+                            {t('Transaction ID')} : {order_detail?.transaction_id || '---'}
+                        </div>
+
+                        <div className="flex items-center gap-2">
+                            {t('Pyament Status')} : <StatusBadge status={order_detail?.payment_status} />
                         </div>
                         <div className="flex items-center gap-2">
-                            {t("Total Amount")} : <span className="text-xl font-bold">$ {order_detail?.total_amount}</span>
+                            {t('Shipping Price')} : <span className="text-xl">$ {order_detail?.shipping_price}</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                            {t('Total Amount')} : <span className="text-xl font-bold">$ {order_detail?.total_amount}</span>
                         </div>
                     </div>
                 </div>
 
                 <StepperPanel className="text-sm">
-                    <p className="text-muted-foreground mb-4 text-lg font-bold">{t("Order Items")}</p>
+                    <p className="text-muted-foreground mb-4 text-lg font-bold">{t('Order Items')}</p>
                     {order_detail?.order_items?.length > 0 ? (
                         <div className="grid grid-cols-1 gap-6 md:grid-cols-1 xl:grid-cols-2">
                             {order_detail?.order_items?.map((order_item) => <OrderItemCard key={order_item.id} order_item={order_item} />)}
@@ -204,9 +206,7 @@ const Show = () => {
                     ) : (
                         <MyNoData />
                     )}
-
                 </StepperPanel>
-
             </Stepper>
         </AppLayout>
     );

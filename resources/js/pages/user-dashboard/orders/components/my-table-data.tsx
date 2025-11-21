@@ -3,12 +3,12 @@ import MyImageGallery from '@/components/my-image-gallery';
 import MyNoData from '@/components/my-no-data';
 import { MyTooltipButton } from '@/components/my-tooltip-button';
 import PaymentMethodLabel from '@/components/PaymentMethodLabel';
+import { Badge } from '@/components/ui/badge';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import useRole from '@/hooks/use-role';
 import useTranslation from '@/hooks/use-translation';
 import StatusBadge from '@/pages/nokor-tech/components/StatusBadge';
-import { TransactionDetailDialog } from '@/pages/nokor-tech/components/TransactionDetailDialog';
 import { Link, router, usePage } from '@inertiajs/react';
 import { ArrowUpDown, ScanEyeIcon } from 'lucide-react';
 import { useState } from 'react';
@@ -52,17 +52,22 @@ const MyTableData = () => {
                 <Table>
                     <TableHeader>
                         <TableRow>
+                            <TableHead onClick={() => handleSort('id')}>
+                                <span className="flex cursor-pointer items-center">
+                                    <ArrowUpDown size={16} /> {t('ID')}
+                                </span>
+                            </TableHead>
                             <TableHead className="text-left">{t('Action')}</TableHead>
                             <TableHead onClick={() => handleSort('status')}>
                                 <span className="flex cursor-pointer items-center">
                                     <ArrowUpDown size={16} /> {t('Order Status')}
                                 </span>
                             </TableHead>
-                            <TableHead onClick={() => handleSort('order_number')}>
+                            {/* <TableHead onClick={() => handleSort('order_number')}>
                                 <span className="flex cursor-pointer items-center">
                                     <ArrowUpDown size={16} /> {t('Order Number')}
                                 </span>
-                            </TableHead>
+                            </TableHead> */}
 
                             <TableHead onClick={() => handleSort('total_amount')}>
                                 <span className="flex cursor-pointer items-center">
@@ -78,6 +83,11 @@ const MyTableData = () => {
 
                             <TableHead onClick={() => handleSort('payment_method')}>
                                 <span className="flex cursor-pointer items-center">
+                                    <ArrowUpDown size={16} /> {t('Payment Gateway')}
+                                </span>
+                            </TableHead>
+                            <TableHead onClick={() => handleSort('payment_method')}>
+                                <span className="flex cursor-pointer items-center">
                                     <ArrowUpDown size={16} /> {t('Payment Method')}
                                 </span>
                             </TableHead>
@@ -91,6 +101,11 @@ const MyTableData = () => {
                                     <ArrowUpDown size={16} /> {t('Payment Status')}
                                 </span>
                             </TableHead>
+                            <TableHead onClick={() => handleSort('notify_telegram_status')}>
+                                <span className="flex cursor-pointer items-center">
+                                    <ArrowUpDown size={16} /> {t('Notify Telegram')}
+                                </span>
+                            </TableHead>
 
                             {/* <TableHead onClick={() => handleSort('updated_at')}>
                                 <span className="flex cursor-pointer items-center">
@@ -102,6 +117,7 @@ const MyTableData = () => {
                     <TableBody>
                         {tableData?.data?.map((item: any, index: number) => (
                             <TableRow key={item.id}>
+                                <TableCell className="font-medium whitespace-nowrap capitalize">{item.id}</TableCell>
                                 <TableCell>
                                     <span className="flex h-full items-center justify-start gap-1">
                                         <Link href={`/user-orders/${item.id}`}>
@@ -109,17 +125,6 @@ const MyTableData = () => {
                                                 <ScanEyeIcon /> View
                                             </MyTooltipButton>
                                         </Link>
-                                        {/* <Link href={`/user-orders/${item.id}/edit`}>
-                                            <MyTooltipButton title={t('Edit')} side="bottom" variant="ghost">
-                                                <EditIcon />
-                                            </MyTooltipButton>
-                                        </Link> */}
-
-                                        {/* Show Transaction Detail */}
-                                        {/* <span className="rounded-md border">
-                                            <TransactionDetailDialog tranId={item?.tran_id} detail={item.transaction_detail || '---'} />
-                                        </span> */}
-                                        {/* End Show Transaction Detail */}
                                         {item?.status == 'pending' && (
                                             <span className="rounded-md border p-0.5">
                                                 <DeleteButton deletePath="/user-orders/" id={item.id} />
@@ -130,23 +135,6 @@ const MyTableData = () => {
                                 <TableCell className="font-medium whitespace-nowrap capitalize">
                                     <StatusBadge status={item.status} />
                                 </TableCell>
-                                <TableCell className="font-medium whitespace-nowrap">
-                                    <div>
-                                        <p className="font-bold">{item.order_number.split('-').slice(1).join('-')}</p>
-                                        <p className="text-muted-foreground">
-                                            {item.created_at
-                                                ? new Date(item.created_at).toLocaleString('en-UK', {
-                                                      year: 'numeric',
-                                                      month: 'short',
-                                                      day: '2-digit',
-                                                      hour: 'numeric',
-                                                      minute: 'numeric',
-                                                      hour12: true, // 👈 forces AM/PM
-                                                  })
-                                                : '---'}
-                                        </p>
-                                    </div>
-                                </TableCell>
                                 <TableCell className="font-medium whitespace-nowrap capitalize">
                                     {item.currency == 'KHR' ? '៛ ' : '$ '} {item.total_amount}
                                 </TableCell>
@@ -156,72 +144,20 @@ const MyTableData = () => {
                                 </TableCell>
 
                                 <TableCell className="font-medium whitespace-nowrap">
-                                    <PaymentMethodLabel value={item?.payment_method} />
+                                    <PaymentMethodLabel value={item?.payment_method || '---'} />
                                 </TableCell>
-                                <TableCell className="font-medium whitespace-nowrap">{item.tran_id}</TableCell>
+                                <TableCell className="font-medium whitespace-nowrap">
+                                    <PaymentMethodLabel value={item?.payment_method_bic || '---'} />
+                                </TableCell>
+                                <TableCell className="font-medium whitespace-nowrap">{item.transaction_id || '---'}</TableCell>
                                 <TableCell className="font-medium whitespace-nowrap capitalize">
                                     <StatusBadge status={item.payment_status} />
                                 </TableCell>
-                                {/* <TableCell>
-                                    {item.images[0] ? (
-                                        <button
-                                            onClick={() => {
-                                                setSelectedImages(item.images);
-                                                setIsOpenViewImages(true);
-                                            }}
-                                            className="cursor-pointer"
-                                        >
-                                            <img
-                                                src={`/assets/images/items/thumb/` + item.images[0]?.image}
-                                                width={100}
-                                                height={100}
-                                                alt=""
-                                                className="size-10 object-contain transition-all duration-300 hover:scale-150"
-                                            />
-                                        </button>
-                                    ) : (
-                                        <img
-                                            src={`/assets/icons/image-icon.png`}
-                                            width={100}
-                                            height={100}
-                                            alt=""
-                                            className="size-10 object-contain"
-                                        />
-                                    )}
-                                </TableCell> */}
-                                {/* <TableCell className="text-center">
-                                    {item.link ? (
-                                        <a href={`${item.link}`} target="_blank">
-                                            <MyTooltipButton variant="ghost" title={item.link} className="p-0 hover:bg-transparent">
-                                                {item.source_detail ? (
-                                                    <span>
-                                                        <img
-                                                            src={`/assets/images/links/thumb/${item?.source_detail?.image}`}
-                                                            className="aspect-square h-10 object-contain"
-                                                            alt=""
-                                                        />
-                                                    </span>
-                                                ) : (
-                                                    <SquareArrowOutUpRightIcon className="hover:stroke-3" />
-                                                )}
-                                            </MyTooltipButton>
-                                        </a>
-                                    ) : (
-                                        '---'
-                                    )}
-                                </TableCell> */}
-
-                                {/* <TableCell>{item.created_by?.name || '---'}</TableCell> */}
-                                {/* <TableCell className="whitespace-nowrap">
-                                    {item.updated_at
-                                        ? new Date(item.updated_at).toLocaleDateString('en-UK', {
-                                              year: 'numeric',
-                                              month: 'long',
-                                              day: 'numeric',
-                                          })
-                                        : '---'}
-                                </TableCell> */}
-                                {/* <TableCell>{item.updated_by?.name || '---'}</TableCell> */}
+                                <TableCell className="font-medium whitespace-nowrap capitalize">
+                                    <Badge variant={item.notify_telegram_status == 'completed' ? 'default' : 'secondary'}>
+                                        {item.notify_telegram_status || 'NA'}
+                                    </Badge>
+                                </TableCell>
                             </TableRow>
                         ))}
                     </TableBody>

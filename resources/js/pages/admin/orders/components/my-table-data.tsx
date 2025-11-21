@@ -53,7 +53,7 @@ const MyTableData = () => {
                 <Table>
                     <TableHeader>
                         <TableRow>
-                             <TableHead onClick={() => handleSort('id')}>
+                            <TableHead onClick={() => handleSort('id')}>
                                 <span className="flex cursor-pointer items-center">
                                     <ArrowUpDown size={16} /> {t('ID')}
                                 </span>
