@@ -137,7 +137,7 @@ class KESSPaywayCheckout extends Controller
                 ]);
             }
 
-            if ($order->notify_telegram_status != 'completed' && $data['status'] == 'SUCCESS') {
+            if ($order->notify_telegram_status != 'completed' && ($data['status'] ?? null) === 'SUCCESS') {
 
                 $telegram_notify_result = TelegramHelper::sendOrderNotification($order);
 
