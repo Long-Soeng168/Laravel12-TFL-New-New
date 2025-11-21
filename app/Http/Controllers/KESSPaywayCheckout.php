@@ -112,15 +112,22 @@ class KESSPaywayCheckout extends Controller
                 $decoded = json_decode($result, true);
                 $result = $decoded ?? ['raw' => $result];
             }
-            $order->update([
-                'notes'                 => 'Recheck Transaction Requested',
-                'status'                => $request->input('status') == 'SUCCESS' ? 'paid' : 'pending',
-                'payment_status'        => $request->input('status', 'UNKNOWN'),
-                'tran_id'               => $request->input('out_trade_no', $order->tran_id),
-                'transaction_id'        => $request->input('transaction_id', $order->transaction_id),
-                'payment_method_bic'    => $request->input('payment_detail.payment_method_bic', null),
 
-                'transaction_detail'    => $result, // <-- careful here
+            $result_request = $result['request'] ?? null;
+            $data    = $result_request['data'] ?? [];
+
+            $order->update([
+                'notes'              => 'Recheck Transaction Requested',
+
+                'status'             => ($data['status'] ?? null) === 'SUCCESS' ? 'paid' : 'pending',
+                'payment_status'     => $data['status'] ?? 'UNKNOWN',
+
+                'tran_id'            => $data['out_trade_no']   ?? $order->tran_id,
+                'transaction_id'     => $data['transaction_id'] ?? $order->transaction_id,
+
+                'payment_method_bic' => $data['payment_detail']['payment_method_bic'] ?? null,
+
+                'transaction_detail' => $data,
             ]);
         }
 
