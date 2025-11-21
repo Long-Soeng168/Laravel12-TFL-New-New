@@ -74,21 +74,21 @@ class KESSPaywayCheckout extends Controller
                 'payment_method_bic'    => $request->input('payment_detail.payment_method_bic', 'UNKNOWN'),
                 'transaction_detail'    => $request->all(), // <-- careful here
             ]);
-        }
 
-        if ($order->notify_telegram_status != 'completed') {
+            if ($order->notify_telegram_status != 'completed') {
 
-            $result = TelegramHelper::sendOrderNotification($order);
+                $result = TelegramHelper::sendOrderNotification($order);
 
-            if ($result['success'] === true) {
-                $order->update([
-                    'notify_telegram_status' => 'completed'
-                ]);
-            } else {
-                $order->update([
-                    'notify_telegram_status' => 'failed'
-                ]);
-                Log::warning('Telegram notify failed for order ' . $order->id . ': ' . $result['message']);
+                if ($result['success'] === true) {
+                    $order->update([
+                        'notify_telegram_status' => 'completed'
+                    ]);
+                } else {
+                    $order->update([
+                        'notify_telegram_status' => 'failed'
+                    ]);
+                    Log::warning('Telegram notify failed for order ' . $order->id . ': ' . $result['message']);
+                }
             }
         }
 
@@ -112,40 +112,43 @@ class KESSPaywayCheckout extends Controller
                 $decoded = json_decode($result, true);
                 $result = $decoded ?? ['raw' => $result];
             }
-
-            $result_request = $result['request'] ?? null;
-            $data    = $result_request['data'] ?? [];
+            $data = $result['data'] ?? [];
 
             $order->update([
                 'notes'              => 'Recheck Transaction Requested',
 
+                // status might not exist in this structure at all
                 'status'             => ($data['status'] ?? null) === 'SUCCESS' ? 'paid' : 'pending',
                 'payment_status'     => $data['status'] ?? 'UNKNOWN',
 
                 'tran_id'            => $data['out_trade_no']   ?? $order->tran_id,
                 'transaction_id'     => $data['transaction_id'] ?? $order->transaction_id,
 
+                // this structure does NOT contain payment_detail anymore
                 'payment_method_bic' => $data['payment_detail']['payment_method_bic'] ?? null,
 
+                // store only the `data` section
                 'transaction_detail' => $data,
             ]);
-        }
 
-        if ($order->notify_telegram_status != 'completed' && $data['status'] == 'SUCCESS') {
+            if ($order->notify_telegram_status != 'completed') {
 
-            $telegram_notify_result = TelegramHelper::sendOrderNotification($order);
+                $telegram_notify_result = TelegramHelper::sendOrderNotification($order);
 
-            if ($telegram_notify_result['success'] === true) {
-                $order->update([
-                    'notify_telegram_status' => 'completed'
-                ]);
-            } else {
-                $order->update([
-                    'notify_telegram_status' => 'failed'
-                ]);
-                Log::warning('Telegram notify failed for order ' . $order->id . ': ' . $telegram_notify_result['message']);
+                if ($telegram_notify_result['success'] === true) {
+                    $order->update([
+                        'notify_telegram_status' => 'completed'
+                    ]);
+                } else {
+                    $order->update([
+                        'notify_telegram_status' => 'failed'
+                    ]);
+                    Log::warning('Telegram notify failed for order ' . $order->id . ': ' . $telegram_notify_result['message']);
+                }
             }
         }
+
+
 
         return response()->json([
             'message' => 'Success',
