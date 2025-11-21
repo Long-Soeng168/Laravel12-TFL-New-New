@@ -120,7 +120,7 @@ class UserOrderController extends Controller implements HasMiddleware
             'paymentLink' => $paymentLink,
         ]);
     }
- 
+
     public function update_status(Request $request, Item $user_item)
     {
         if ($user_item->shop_id != Auth::user()->shop_id) {
