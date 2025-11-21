@@ -37,7 +37,7 @@ export function TransactionDetailDialog({ detail, order_id }: { detail: string; 
                 toast.success('Transaction rechecked successfully');
             } else {
                 setTransaction(JSON.stringify(data, null, 2));
-                toast.warning('Recheck completed but no transaction data returned');
+                // toast.warning('Recheck completed but no transaction data returned');
             }
         } catch (err: any) {
             toast.error(err.message || 'Something went wrong while rechecking');
