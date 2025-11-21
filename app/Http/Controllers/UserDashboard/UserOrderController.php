@@ -75,32 +75,13 @@ class UserOrderController extends Controller implements HasMiddleware
         ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create(Request $request)
-    {
-        dd('Create Function');
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        dd('Store Function');
-    }
-
-    /**
-     * Display the specified resource.
-     */
     public function show(Order $user_order)
     {
         if ($user_order->user_id != Auth::user()->id) {
             abort(403, 'Unauthorized resource');
         }
 
-        if ($user_order->status == 'pending' && $user_order->transaction_id == null) {
+        if ($user_order->transaction_id == null) {
             $tran_id = uniqid();
             $user_order->update(
                 [
@@ -113,25 +94,15 @@ class UserOrderController extends Controller implements HasMiddleware
 
         $currency = $user_order->currency;
         $continue_success_url = env('APP_URL') . "/kess/success?order_id=" . $user_order->id;
-
-        // $amount = $user_order->total_amount - $user_order->shipping_price;
-        // $shipping = $user_order->shipping_price;
-        // $email = $user_order->buyer->email;
-        // $req_time = $user_order->req_time;
-        // $merchant_id = config('payway.merchant_id');
-        // $payment_option = 'abapay_khqr'; // or any default payment option if needed
-        // $skip_success_page = 1; // or any default payment option if needed
-        // $return_url = env('APP_URL') . "/kess/callback";
-        // $return_params ='payment_success';
-
+        $callback_url = env('APP_URL') . "/api/kess/callback?order_id=" . $user_order->id;
 
         $paymentLink = null;
-        if ($user_order->status == 'pending') {
+        if ($user_order->transaction_id == null) {
             // Start KESS Payment
             $merchant = new Merchants();
 
             // You can test either createOrder() or queryOrder()
-            $result = $merchant->createOrder($tran_id, $user_order->total_amount, $currency, $continue_success_url, $user_order->id);
+            $result = $merchant->createOrder($tran_id, $user_order->total_amount, $currency, $continue_success_url, $callback_url);
 
             // Decode JSON if it's a string
             if (is_string($result)) {
@@ -149,34 +120,7 @@ class UserOrderController extends Controller implements HasMiddleware
             'paymentLink' => $paymentLink,
         ]);
     }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-
-    public function edit(Item $user_order)
-    {
-        if ($user_order->user_id != Auth::user()->id) {
-            abort(404);
-        }
-        $editData = $user_order->load('order_items.item.images');
-        dd($editData);
-        return Inertia::render('user-dashboard/orders/Create', [
-            'editData' => $editData,
-        ]);
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Order $user_order)
-    {
-        if ($user_order->user_id != Auth::user()->id) {
-            abort(404);
-        }
-        dd($request->all());
-    }
-
+ 
     public function update_status(Request $request, Item $user_item)
     {
         if ($user_item->shop_id != Auth::user()->shop_id) {

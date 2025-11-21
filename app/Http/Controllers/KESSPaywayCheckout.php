@@ -37,62 +37,6 @@ class KESSPaywayCheckout extends Controller
             'hash' => $hash,
         ]);
     }
-    public function shopping_cart()
-    {
-        $req_time = date('YmdHis'); // UTC time format
-        $merchant_id = config('payway.merchant_id');
-        $tran_id = uniqid();
-
-        // $hashString = $req_time . 'pgmarket68e5ded23d68a482abapay_khqrhttps://pgmarket.corasolution.com/aba/callback?tran_id=68e5ded23d68ahttps://pgmarket.corasolution.com/aba/cancel?tran_id=68e5ded23d68ahttps://pgmarket.corasolution.com/aba/success?tran_id=68e5ded23d68aUSD1';
-        // $hash = $this->payWayService->getHash($hashString);
-
-        // dd($merchant_id);
-        return Inertia::render("nokor-tech/cart/ShoppingCart", [
-            'req_time' => $req_time,
-            'shipping' => env('SHIPPING_PRICE_USD') ?? 0,
-            'currency' => "USD",
-            'paymentOption' => "kess_webpay",
-            'merchant_id' => $merchant_id,
-            'tran_id' => $tran_id,
-            'app_url' => config('app.url'),
-            'api_url' => config('payway.api_url'), // Assuming this is defined elsewhere
-        ]);
-    }
-
-    // End Payment Gateway
-
-    public function showTestCheckoutForm()
-    {
-        $tran_id = 'TXN001234567';
-        $amount = '1.00';
-        $shipping = '2.00';
-        $email = 'sokha.tim@ababank.com'; // or any default payment option if needed
-        $req_time = date('YmdHis');
-        $merchant_id = config('payway.merchant_id');
-        $payment_option = 'abapay_khqr'; // or any default payment option if needed
-        $return_url = env('APP_URL') . "/aba/callback?tran_id={$tran_id}";
-        $cancel_url = env('APP_URL') . "/aba/cancel?tran_id={$tran_id}";
-        $continue_success_url = env('APP_URL') . "/aba/success?tran_id={$tran_id}";
-        // $return_params ='payment_success';
-        $hash = $this->payWayService->getHash(
-            $req_time . $merchant_id . $tran_id . $amount . $shipping .
-                $email . $payment_option . $return_url . $cancel_url . $continue_success_url
-        );
-
-        return view('aba_test_checkout', compact(
-            'hash',
-            'tran_id',
-            'amount',
-            'shipping',
-            'email',
-            'payment_option',
-            'merchant_id',
-            'req_time',
-            'return_url',
-            'cancel_url',
-            'continue_success_url',
-        ));
-    }
 
     public function cancel(Request $request)
     {
@@ -111,102 +55,39 @@ class KESSPaywayCheckout extends Controller
     }
     public function success(Request $request)
     {
-        $order = Order::findOrFail($request->order_id);
-        return redirect("/user-orders/{$order->id}?order_success=1&order_id=" . $order->id);
-
-        // $merchant = new Merchants();
-
-        // $result = $merchant->queryOrder($request->out_trade_no);
-
-        // $payment_status = $result['data']['status'];
-
-        // $order = Order::where('tran_id', $request->out_trade_no)->first();
-        // $order->update([
-        //     'status' => $payment_status == 'SUCCESS' ? 'paid' : 'pending',
-        //     'payment_status' => $payment_status,
-        //     'transaction_detail' => $result['data'],
-        //     'transaction_id' => $result['data']['transaction_id'],
-        // ]);
-
-        // // dd($order->notify_telegram_status);
-        // if ($order->notify_telegram_status != 'completed') {
-
-        //     $result = TelegramHelper::sendOrderNotification($order);
-
-        //     if ($result['success'] === true) {
-        //         // Telegram sent — mark completed
-        //         $order->update([
-        //             'notify_telegram_status' => 'completed'
-        //         ]);
-        //     } else {
-        //         // Telegram failed — mark failed
-        //         $order->update([
-        //             'notify_telegram_status' => 'failed'
-        //         ]);
-
-        //         // optional: log it
-        //         Log::warning('Telegram notify failed for order ' . $order->id . ': ' . $result['message']);
-        //     }
-        // }
-
-
-        // if ($order) {
-        //     return redirect("/user-orders/{$order->id}?order_success=1&order_id=" . $order->id);
-        // } else {
-        //     return redirect('/shopping-cart?order_fail=1');
-        // }
-
-        // return response()->json([
-        //     'message' => 'Success',
-        //     'request' => $request->all(),
-        // ]);
+        return redirect("/user-orders/{$request->order_id}?order_success=1&order_id=" . $request->order_id);
     }
     public function callback(Request $request)
     {
         $order = Order::findOrFail($request->order_id);
 
-        $order->update([
-            'notes' => 'Requested',
-            'transaction_detail' => $request->all()
-        ]);
+        if ($order->status == 'pending' && $order->payment_status != 'SUCCESS') {
+            $order->update([
+                'notes'                 => 'Requested',
+                'status'                => $request->input('status') == 'SUCCESS' ? 'paid' : 'pending',
+                'payment_status'        => $request->input('status', 'UNKNOWN'),
+                'tran_id'               => $request->input('out_trade_no', $order->tran_id),
+                'transaction_id'        => $request->input('transaction_id', $order->transaction_id),
+                'payment_method_bic'    => $request->input('payment_detail.payment_method_bic', 'UNKNOWN'),
+                'transaction_detail'    => $request->all(), // <-- careful here
+            ]);
+        }
 
-        // if ($order->status == 'pending' && $order->payment_status != 'SUCCESS') {
-        //     $merchant = new Merchants();
-        //     $result = $merchant->queryOrder($request->out_trade_no);
-        //     $payment_status = $result['data']['status'];
-        //     $order->update([
-        //         'status' => $payment_status == 'SUCCESS' ? 'paid' : 'pending',
-        //         'payment_status' => $payment_status,
-        //     ]);
-        // }
+        if ($order->notify_telegram_status != 'completed') {
 
-        // // dd($order->notify_telegram_status);
-        // if ($order->notify_telegram_status != 'completed') {
+            $result = TelegramHelper::sendOrderNotification($order);
 
-        //     $result = TelegramHelper::sendOrderNotification($order);
-
-        //     if ($result['success'] === true) {
-        //         // Telegram sent — mark completed
-        //         $order->update([
-        //             'notify_telegram_status' => 'completed'
-        //         ]);
-        //     } else {
-        //         // Telegram failed — mark failed
-        //         $order->update([
-        //             'notify_telegram_status' => 'failed'
-        //         ]);
-
-        //         // optional: log it
-        //         Log::warning('Telegram notify failed for order ' . $order->id . ': ' . $result['message']);
-        //     }
-        // }
-
-
-        // if ($order) {
-        //     return redirect("/user-orders/{$order->id}?order_success=1&order_id=" . $order->id);
-        // } else {
-        //     return redirect('/shopping-cart?order_fail=1');
-        // }
+            if ($result['success'] === true) {
+                $order->update([
+                    'notify_telegram_status' => 'completed'
+                ]);
+            } else {
+                $order->update([
+                    'notify_telegram_status' => 'failed'
+                ]);
+                Log::warning('Telegram notify failed for order ' . $order->id . ': ' . $result['message']);
+            }
+        }
 
         return response()->json([
             'message' => 'Success',
