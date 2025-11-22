@@ -177,7 +177,7 @@ class TelegramHelper
 
         try {
             // Construct the message text for a successful order
-            $text = "✅ *New Order Completed!*\n\n"
+            $text = "✅ *New Order!*\n\n"
                 . "*Order ID:* " . $order->id . "\n"
                 . "*User Name:* " . $order->buyer->name . "\n"
                 . "*Phone:* " . $order->buyer->phone . "\n"
