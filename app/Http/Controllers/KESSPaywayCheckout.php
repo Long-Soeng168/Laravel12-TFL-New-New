@@ -75,7 +75,7 @@ class KESSPaywayCheckout extends Controller
                 'transaction_detail'    => $request->all(), // <-- careful here
             ]);
 
-            if ($order->notify_telegram_status != 'completed') {
+            if ($order->notify_telegram_status != 'completed' && $request->input('status') == 'SUCCESS') {
 
                 $result = TelegramHelper::sendOrderNotification($order);
 
